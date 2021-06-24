@@ -38,9 +38,9 @@ public class TestUI : MonoBehaviour
     {
         Game.CurrentEntities.NextTurn();
         var states = Game.CurrentEntities.States;
-        string str = $"{Game.CurrentEntities.Year}年{Game.CurrentEntities.Month}月\n";
+        string str = $"{Game.CurrentEntities.Year}骞磠Game.CurrentEntities.Month}鏈圽n";
         foreach (var s in states) {
-           str += $"{s.Name} - 民生：{s.Satisfaction} 礼乐：{s.Ceremony}人口：{s.Population} 兵士：{s.Army} 粮食：{s.Food }\n";
+           str += $"{s.Name} - 姘戠敓锛歿s.Satisfaction} 绀间箰锛歿s.Ceremony}浜哄彛锛歿s.Population} 鍏靛＋锛歿s.Army} 绮锛歿s.Food }\n";
         }
         Debug.Log(str);
     }

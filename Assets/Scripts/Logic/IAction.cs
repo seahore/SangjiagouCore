@@ -8,7 +8,7 @@ namespace SangjiagouCore {
     public interface IAction
     {
         /// <summary>
-        /// ִ�и��ж�
+        /// 执行该行动
         /// </summary>
         public void Act();
 

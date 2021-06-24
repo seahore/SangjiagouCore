@@ -21,9 +21,9 @@ namespace SangjiagouCore
         : base(actor, place)
         {
             if (!actor.BelongTo.AllowedPropositionTypes.Contains(_proposition.GetType()))
-                Debug.LogWarning($"{actor.BelongTo.Name}的{actor.FullName}提出了不符合其学家立场的对策: {proposition.GetType().Name}");
+                Debug.LogWarning($"{actor.BelongTo.Name}鐨剓actor.FullName}鎻愬嚭浜嗕笉绗﹀悎鍏跺瀹剁珛鍦虹殑瀵圭瓥: {proposition.GetType().Name}");
             if (!place.IsCapital)
-                Debug.LogWarning($"{actor.BelongTo.Name}的{actor.FullName}在{place.Name}提出了对策，但{place.Name}不是京城");
+                Debug.LogWarning($"{actor.BelongTo.Name}鐨剓actor.FullName}鍦▄place.Name}鎻愬嚭浜嗗绛栵紝浣唟place.Name}涓嶆槸浜煄");
 
             _proposition = proposition;
         }

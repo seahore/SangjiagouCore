@@ -26,7 +26,7 @@ public class BGMPlayer : MonoBehaviour
 
     int _curPlaying;
 
-	void Start () {
+    void Start () {
         if (BGMList.Length <= 0)
             this.enabled = false;
 
@@ -37,8 +37,8 @@ public class BGMPlayer : MonoBehaviour
         _curPlaying = 0;
         TargetSource.PlayOneShot(BGMList[_curPlaying]);
     }
-	
-	void Update () {
+    
+    void Update () {
         if (!TargetSource.isPlaying)
         {
             if (_curPlaying < BGMList.Length)

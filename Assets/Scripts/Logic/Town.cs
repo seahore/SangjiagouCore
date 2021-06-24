@@ -78,7 +78,7 @@ namespace SangjiagouCore {
                 _isCapital = false;
                 _controller = receiver;
                 if (formerController.Territory.Count == 0) {
-                    // TODO: 国家被消灭的处理
+                    // TODO: 鍥藉琚秷鐏殑澶勭悊
                     return;
                 }
                 formerController.Territory[0]._isCapital = true;

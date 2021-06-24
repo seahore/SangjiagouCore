@@ -13,9 +13,9 @@ namespace SangjiagouCore {
         public abstract void Act();
 
         /// <summary>
-        /// ÓÉµçÄÔÆÀ¹À´ËĞĞ¶¯µÄ¿ÉĞĞĞÔ
+        /// ç”±ç”µè„‘è¯„ä¼°æ­¤è¡ŒåŠ¨çš„å¯è¡Œæ€§
         /// </summary>
-        /// <returns>¿ÉĞĞĞÔ</returns>
+        /// <returns>å¯è¡Œæ€§</returns>
         public abstract float Assess();
     
         public StateAction(State actor, School proposer) {

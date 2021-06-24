@@ -8,7 +8,7 @@ namespace SangjiagouCore
     public class AggressiveWar : War
     {
         /// <summary>
-        /// ²»ÒåÕ½½áËã
+        /// ä¸ä¹‰æˆ˜ç»“ç®—
         /// </summary>
         public new struct Report
         {
@@ -28,16 +28,16 @@ namespace SangjiagouCore
         }
         Town _targetTown;
         /// <summary>
-        /// ±¾´ÎÒåÕ½ËùÕù¶áµÄ³Ç¹ù
+        /// æœ¬æ¬¡ä¹‰æˆ˜æ‰€äº‰å¤ºçš„åŸéƒ­
         /// </summary>
         public Town TargetTown { get => _targetTown; }
 
         /// <summary>
-        /// ´´½¨Ò»¸öĞÂµÄ²»ÒåÕ½£¬²¢×Ô¶¯¸ù¾İĞûÕ½Ë«·½×Ô¶¯Ñ¯ÎÊËû¹úÊÇ·ñ²Î¼ÓÕ½Õù£¬²¢×Ô¶¯½«Ô¸Òâ¼ÓÈëÕ½ÕùÄ³Ò»·½µÄ¹ú¼Ò¼ÓÈë¶ÓÁĞ
+        /// åˆ›å»ºä¸€ä¸ªæ–°çš„ä¸ä¹‰æˆ˜ï¼Œå¹¶è‡ªåŠ¨æ ¹æ®å®£æˆ˜åŒæ–¹è‡ªåŠ¨è¯¢é—®ä»–å›½æ˜¯å¦å‚åŠ æˆ˜äº‰ï¼Œå¹¶è‡ªåŠ¨å°†æ„¿æ„åŠ å…¥æˆ˜äº‰æŸä¸€æ–¹çš„å›½å®¶åŠ å…¥é˜Ÿåˆ—
         /// </summary>
-        /// <param name="declarer">ĞûÕ½¹ú</param>
-        /// <param name="declaree">±»ĞûÕ½¹ú</param>
-        /// <param name="targetTown">ËùÕù¶áµÄ³Ç¹ù</param>
+        /// <param name="declarer">å®£æˆ˜å›½</param>
+        /// <param name="declaree">è¢«å®£æˆ˜å›½</param>
+        /// <param name="targetTown">æ‰€äº‰å¤ºçš„åŸéƒ­</param>
         public AggressiveWar(State attacker, State defender, Town targetTown) :
             base(attacker, defender)
         {
@@ -48,9 +48,9 @@ namespace SangjiagouCore
         }
 
         /// <summary>
-        /// ½øĞĞ²»ÒåÕ½µÄÄ£Äâ£¬·µ»Ø¸Ã´ÎÕ½ÕùµÄ½áËã±¨¸æ
+        /// è¿›è¡Œä¸ä¹‰æˆ˜çš„æ¨¡æ‹Ÿï¼Œè¿”å›è¯¥æ¬¡æˆ˜äº‰çš„ç»“ç®—æŠ¥å‘Š
         /// </summary>
-        /// <returns>¸Ã´ÎÕ½ÕùµÄ½áËã±¨¸æ</returns>
+        /// <returns>è¯¥æ¬¡æˆ˜äº‰çš„ç»“ç®—æŠ¥å‘Š</returns>
         public new AggressiveWar.Report Settle()
         {
             uint attackerArmy = _initialAttackerArmy;
@@ -59,7 +59,7 @@ namespace SangjiagouCore
             while (true) {
                 defenderArmy -= (uint)(0.02f * attackerArmy * Random.Range(0.5f, 1.5f) * _attackerEnhancement);
                 attackerArmy -= (uint)(0.02f * defenderArmy * Random.Range(0.6f, 1.6f) * _defenderEnhancement);
-                // Èç¹ûÄ³Ò»·½ËğÊ§Ì«¶à£¬ÄÇÃ´Ã¿Ò»ÂÖ½áÊøÕ½ÒÛµÄ»ú»áÌá¸ßµ½0.4
+                // å¦‚æœæŸä¸€æ–¹æŸå¤±å¤ªå¤šï¼Œé‚£ä¹ˆæ¯ä¸€è½®ç»“æŸæˆ˜å½¹çš„æœºä¼šæé«˜åˆ°0.4
                 if (toMuchLoss()) {
                     if (Random.Range(0.0f, 1.0f) < 0.4f) break;
                 } else {
