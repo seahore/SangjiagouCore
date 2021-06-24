@@ -5,7 +5,9 @@ using UnityEngine;
 
 namespace SangjiagouCore
 {
-
+    /// <summary>
+    /// 说理行动，提升学家影响力
+    /// </summary>
     public class DiscussWithMonarchAction : ScholarAction
     {
 

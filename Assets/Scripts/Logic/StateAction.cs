@@ -10,6 +10,7 @@ namespace SangjiagouCore {
         protected State _actor;
         protected School _proposer;
 
+        protected const float CANNOT_ACT = float.NegativeInfinity;
         public abstract void Act();
 
         /// <summary>

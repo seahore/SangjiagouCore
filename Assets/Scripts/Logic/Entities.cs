@@ -20,6 +20,7 @@ namespace SangjiagouCore
             public List<School.Package> Schools;
             public List<State.Package> States;
             public List<Town.Package> Towns;
+            public List<List<string>> Roads; // ==> HashSet<(Town, Town)> _roads;
         }
         public Package Pack()
         {
@@ -27,7 +28,8 @@ namespace SangjiagouCore
                 TotalMonth = _totalMonth,
                 Schools = new List<School.Package>(),
                 States = new List<State.Package>(),
-                Towns = new List<Town.Package>()
+                Towns = new List<Town.Package>(),
+                Roads = new List<List<string>>()
             };
             foreach (var s in _schools) {
                 pkg.Schools.Add(s.Pack());
@@ -37,6 +39,9 @@ namespace SangjiagouCore
             }
             foreach (var t in _towns) {
                 pkg.Towns.Add(t.Pack());
+            }
+            foreach(var r in _roads) {
+                pkg.Roads.Add(new List<string> { r.Item1.Name, r.Item2.Name });
             }
             return pkg;
         }
@@ -79,6 +84,24 @@ namespace SangjiagouCore
                 t.Relink();
             }
 
+            _roads = new HashSet<(Town, Town)>();
+            foreach(var r in _pkg.Roads) {
+                Town town1 = null, town2 = null;
+                foreach(var t in _towns) {
+                    if(t.Name == r[0]) {
+                        town1 = t;
+                        break;
+                    }
+                }
+                foreach (var t in _towns) {
+                    if (t.Name == r[1]) {
+                        town2 = t;
+                        break;
+                    }
+                }
+                _roads.Add((town1, town2));
+            }
+
             _pkg = null;
         }
 
@@ -97,7 +120,7 @@ namespace SangjiagouCore
         /// <summary>
         /// 百家
         /// </summary>
-        public List<School> Schools { get => _schools; }
+        public List<School> Schools => _schools;
 
         /// <summary>
         /// 诸子
@@ -116,14 +139,30 @@ namespace SangjiagouCore
         /// <summary>
         /// 所有诸侯国
         /// </summary>
-        public List<State> States { get => _states; }
+        public List<State> States => _states;
 
+        /// <summary>
+        /// 天下人口
+        /// </summary>
+        public uint TotalPopulation {
+            get {
+                uint res = 0;
+                foreach (var s in _states)
+                    res += s.Population;
+                return res;
+            }
+        }
         List<Town> _towns;
         /// <summary>
         /// 所有城郭
         /// </summary>
-        public List<Town> Towns { get => _towns; }
+        public List<Town> Towns => _towns;
 
+        HashSet<(Town, Town)> _roads;
+        /// <summary>
+        /// 两城之间有直接道路连接的集合
+        /// </summary>
+        public HashSet<(Town, Town)> Roads => _roads;
 
         /// <summary>
         /// 进行下一回合
@@ -142,6 +181,7 @@ namespace SangjiagouCore
             _schools = new List<School>();
             _states = new List<State>();
             _towns = new List<Town>();
+            _roads = new HashSet<(Town, Town)>();
         }
     }
 

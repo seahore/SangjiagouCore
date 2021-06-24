@@ -208,10 +208,11 @@ namespace SangjiagouCore
                 else _population = value;
             }
         }
+
         /// <summary>
-        /// 该国之最大人口
+        /// 该国之总发展度
         /// </summary>
-        public uint MaxPopulation {
+        public uint TotalDevelopment {
             get {
                 uint r = 0;
                 foreach (var i in Territory) {
@@ -220,6 +221,11 @@ namespace SangjiagouCore
                 return r;
             }
         }
+
+        /// <summary>
+        /// 该国之最大人口，即总发展度
+        /// </summary>
+        public uint MaxPopulation => TotalDevelopment;
 
         uint _army;
         /// <summary>

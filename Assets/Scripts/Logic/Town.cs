@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace SangjiagouCore {
+namespace SangjiagouCore
+{
 
     public class Town : IPackable<Town.Package>
     {
@@ -45,7 +46,7 @@ namespace SangjiagouCore {
                 return;
 
             foreach (var s in Game.CurrentEntities.States) {
-                if(_pkg.Controller == s.Name) {
+                if (_pkg.Controller == s.Name) {
                     _controller = s;
                     break;
                 }

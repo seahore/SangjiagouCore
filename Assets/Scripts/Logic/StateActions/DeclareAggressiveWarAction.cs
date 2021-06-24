@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace SangjiagouCore {
 
+    /// <summary>
+    /// 发动不义战行动
+    /// </summary>
     public class DeclareAggressiveWarAction : DeclareWarAction
     {
         Town _target;

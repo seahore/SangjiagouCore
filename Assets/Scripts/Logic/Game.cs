@@ -159,6 +159,12 @@ namespace SangjiagouCore {
                 new Town("临淄", new Vector2(1.0f, 1.0f), qi, 80000, true),
                 new Town("莒", new Vector2(6.0f, 2.0f), qi, 20000, false)
             };
+            _currentEntities.Roads.Add((tl[0], tl[1]));
+            _currentEntities.Roads.Add((tl[1], tl[0]));
+            _currentEntities.Roads.Add((tl[1], tl[2]));
+            _currentEntities.Roads.Add((tl[2], tl[1]));
+            _currentEntities.Roads.Add((tl[2], tl[3]));
+            _currentEntities.Roads.Add((tl[3], tl[2]));
             School rujia = new School("儒家", new List<Scholar>(), new List<Type> { typeof(DeclareWarAction) });
             School mojia = new School("墨家", new List<Scholar>(), new List<Type>());
             List<Scholar> scl1 = new List<Scholar> {

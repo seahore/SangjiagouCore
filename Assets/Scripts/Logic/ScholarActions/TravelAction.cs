@@ -6,6 +6,9 @@ using UnityEngine;
 namespace SangjiagouCore
 {
 
+    /// <summary>
+    /// 游历行动，转移到另一个城郭
+    /// </summary>
     public class TravelAction : ScholarAction
     {
         Town _destination;

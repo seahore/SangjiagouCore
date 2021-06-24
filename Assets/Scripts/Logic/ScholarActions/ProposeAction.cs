@@ -6,6 +6,9 @@ using UnityEngine;
 namespace SangjiagouCore
 {
 
+    /// <summary>
+    /// 对策行动，向某国的行动候选队列加入一个国家行动
+    /// </summary>
     public class ProposeAction : ScholarAction
     {
         StateAction _proposition;
