@@ -8,7 +8,9 @@ namespace SangjiagouCore {
     public abstract class StateAction : IAction
     {
         protected State _actor;
+        public State Actor => _actor;
         protected School _proposer;
+        public School Proposer => _proposer;
 
         protected const float CANNOT_ACT = float.NegativeInfinity;
         public abstract void Act();

@@ -10,8 +10,8 @@ namespace SangjiagouCore {
         public class Package
         {
             public string Name;
-            public uint PoliticsAbility;
-            public uint MilitaryAbility;
+            public int PoliticsAbility;
+            public int MilitaryAbility;
             public bool IsInvader;
         }
         public Package Pack()
@@ -44,11 +44,11 @@ namespace SangjiagouCore {
         string _name;
         public string Name { get => _name; }
 
-        uint _politicsAbility;
-        public uint PoliticsAbility { get => _politicsAbility; }
+        int _politicsAbility;
+        public int PoliticsAbility { get => _politicsAbility; }
 
-        uint _militaryAbility;
-        public uint MilitaryAbility { get => _militaryAbility; }
+        int _militaryAbility;
+        public int MilitaryAbility { get => _militaryAbility; }
 
         bool _isInvader;
         public bool IsInvader { get => _isInvader; set { _isInvader = value; } }
@@ -57,7 +57,7 @@ namespace SangjiagouCore {
         {
             Unpack(pkg);
         }
-        public Monarch(string name, uint politicsAbility, uint militaryAbility) {
+        public Monarch(string name, int politicsAbility, int militaryAbility) {
             _name = name;
             _politicsAbility = politicsAbility;
             _militaryAbility = militaryAbility;

@@ -14,24 +14,32 @@ namespace SangjiagouCore
             public struct _Vector2 { public float x, y; }
             public _Vector2 Position;
             public string Controller; // ==> State _controller;
-            public uint Development;
+            public int Development;
             public bool IsCapital;
+            public Dictionary<string, List<Scholar.Package>> Recruits;
         }
         public Package Pack()
         {
             Package pkg = new Package {
                 Name = _name,
-                Position = new Package._Vector2(),
+                Position = new Package._Vector2 { x = _position.x , y = _position.y },
                 Controller = _controller.Name,
                 Development = _development,
-                IsCapital = _isCapital
+                IsCapital = _isCapital,
+                Recruits = new Dictionary<string, List<Scholar.Package>>()
             };
-            pkg.Position.x = _position.x;
-            pkg.Position.y = _position.y;
+            foreach (var r in _recruits) {
+                List<Scholar.Package> l = new List<Scholar.Package>();
+                foreach (var s in r.Value) {
+                    l.Add(s.Pack());
+                }
+                pkg.Recruits.Add(r.Key.Name, l);
+            }
 
             return pkg;
         }
         Package _pkg;
+        Dictionary<string, List<Scholar>> _unlinkRecruits;
         public void Unpack(Package pkg)
         {
             _pkg = pkg;
@@ -39,6 +47,14 @@ namespace SangjiagouCore
             _position = new Vector2(_pkg.Position.x, _pkg.Position.y);
             _development = _pkg.Development;
             _isCapital = _pkg.IsCapital;
+            _unlinkRecruits = new Dictionary<string, List<Scholar>>();
+            foreach (var r in pkg.Recruits) {
+                List<Scholar> l = new List<Scholar>();
+                foreach (var sp in r.Value) {
+                    l.Add(new Scholar(sp, null));
+                }
+                _unlinkRecruits.Add(r.Key, l);
+            }
         }
         public void Relink()
         {
@@ -51,27 +67,66 @@ namespace SangjiagouCore
                     break;
                 }
             }
+            _recruits = new Dictionary<School, List<Scholar>>();
+            foreach (var i in _unlinkRecruits) {
+                School school = null;
+                foreach (var s in Game.CurrentEntities.Schools) {
+                    if(i.Key == s.Name) {
+                        school = s;
+                        break;
+                    }
+                }
+                foreach (var s in i.Value) {
+                    s.Relink();
+                }
+                _recruits.Add(school, i.Value);
+            }
 
             _pkg = null;
         }
 
 
         string _name;
+        /// <summary>
+        /// 城名
+        /// </summary>
         public string Name { get => _name; }
 
         Vector2 _position;
+        /// <summary>
+        /// 该城在地图上的位置
+        /// </summary>
         public Vector2 Position { get => _position; }
 
         State _controller;
+        /// <summary>
+        /// 统治该城的国家
+        /// </summary>
         public State Controller { get => _controller; }
 
-        uint _development;
-        public uint Development { get => _development; }
+        int _development;
+        /// <summary>
+        /// 该城发展度
+        /// </summary>
+        public int Development { get => _development; }
 
         bool _isCapital;
+        /// <summary>
+        /// 该城是否作为某国的京城
+        /// </summary>
         public bool IsCapital { get => _isCapital; set { _isCapital = value; } }
 
 
+        Dictionary<School, List<Scholar>> _recruits;
+        /// <summary>
+        /// 每个学家在该地可招收的成员列表
+        /// </summary>
+        public Dictionary<School, List<Scholar>> Recruits => _recruits;
+
+        /// <summary>
+        /// 将该城割让给receiver
+        /// </summary>
+        /// <param name="receiver">要割让到的国家</param>
         public void CedeTo(State receiver)
         {
             if (_isCapital) {
@@ -95,13 +150,14 @@ namespace SangjiagouCore
         {
             Unpack(pkg);
         }
-        public Town(string name, Vector2 pos, State ctrl, uint dev, bool isCap)
+        public Town(string name, Vector2 pos, State ctrl, int dev, bool isCap, Dictionary<School, List<Scholar>> recruits)
         {
             _name = name;
             _position = pos;
             _controller = ctrl;
             _development = dev;
             _isCapital = isCap;
+            _recruits = recruits;
         }
     }
 

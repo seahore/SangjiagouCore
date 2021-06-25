@@ -16,7 +16,7 @@ namespace SangjiagouCore
         /// </summary>
         public class Package
         {
-            public uint TotalMonth;
+            public int TotalMonth;
             public List<School.Package> Schools;
             public List<State.Package> States;
             public List<Town.Package> Towns;
@@ -105,16 +105,16 @@ namespace SangjiagouCore
             _pkg = null;
         }
 
-        uint _totalMonth;
-        public uint TotalMonth => _totalMonth;
+        int _totalMonth;
+        public int TotalMonth => _totalMonth;
         /// <summary>
         /// 当前月份
         /// </summary>
-        public uint Month => (_totalMonth - 1) % 12 + 1;
+        public int Month => (_totalMonth - 1) % 12 + 1;
         /// <summary>
         /// 当前年份，自月份除12取整获得
         /// </summary>
-        public uint Year => _totalMonth / 12 + 1;
+        public int Year => _totalMonth / 12 + 1;
 
         List<School> _schools;
         /// <summary>
@@ -144,9 +144,9 @@ namespace SangjiagouCore
         /// <summary>
         /// 天下人口
         /// </summary>
-        public uint TotalPopulation {
+        public int TotalPopulation {
             get {
-                uint res = 0;
+                int res = 0;
                 foreach (var s in _states)
                     res += s.Population;
                 return res;

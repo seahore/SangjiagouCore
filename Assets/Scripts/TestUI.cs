@@ -30,7 +30,8 @@ public class TestUI : MonoBehaviour
     public void OnTriggerWarButtonClick()
     {
         War war = new War(Game.CurrentEntities.States[0], Game.CurrentEntities.States[1]);
-        War.Report report = war.Settle();
+        war.Settle();
+        War.Report report = war.GetReport();
         Debug.Log($"AttackerWon: {report.AttackerWon}\nAttackers: {war.Attackers} Defenders: { war.Defenders}\nAttackerLoss: {report.AttackerLoss} DefenderLoss: {report.DefenderLoss}");
     }
 

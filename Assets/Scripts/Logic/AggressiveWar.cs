@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SangjiagouCore
 {
 
-    public class AggressiveWar : War
+    public class AggressiveWar : War, IReportable<AggressiveWar.Report>
     {
         /// <summary>
         /// 不义战结算
@@ -14,18 +14,21 @@ namespace SangjiagouCore
         {
             bool _attackerWon;
             public bool AttackerWon => _attackerWon;
-            uint _attackerLoss;
-            public uint AttackerLoss => _attackerLoss;
-            uint _defenderLoss;
-            public uint DefenderLoss => _defenderLoss;
+            int _attackerLoss;
+            public int AttackerLoss => _attackerLoss;
+            int _defenderLoss;
+            public int DefenderLoss => _defenderLoss;
 
-            public Report(bool attackerWon, uint attackerLoss, uint defenderLoss)
+            public Report(bool attackerWon, int attackerLoss, int defenderLoss)
             {
                 _attackerWon = attackerWon;
                 _attackerLoss = attackerLoss;
                 _defenderLoss = defenderLoss;
             }
         }
+        Report _report;
+
+
         Town _targetTown;
         /// <summary>
         /// 本次义战所争夺的城郭
@@ -51,14 +54,14 @@ namespace SangjiagouCore
         /// 进行不义战的模拟，返回该次战争的结算报告
         /// </summary>
         /// <returns>该次战争的结算报告</returns>
-        public new AggressiveWar.Report Settle()
+        public new void Settle()
         {
-            uint attackerArmy = _initialAttackerArmy;
-            uint defenderArmy = _initialDefenderArmy;
+            int attackerArmy = _initialAttackerArmy;
+            int defenderArmy = _initialDefenderArmy;
             bool toMuchLoss() => attackerArmy < (0.75f * _initialAttackerArmy) || defenderArmy < (0.75f * _initialDefenderArmy);
             while (true) {
-                defenderArmy -= (uint)(0.02f * attackerArmy * Random.Range(0.5f, 1.5f) * _attackerEnhancement);
-                attackerArmy -= (uint)(0.02f * defenderArmy * Random.Range(0.6f, 1.6f) * _defenderEnhancement);
+                defenderArmy -= (int)(0.02f * attackerArmy * Random.Range(0.5f, 1.5f) * _attackerEnhancement);
+                attackerArmy -= (int)(0.02f * defenderArmy * Random.Range(0.6f, 1.6f) * _defenderEnhancement);
                 // 如果某一方损失太多，那么每一轮结束战役的机会提高到0.4
                 if (toMuchLoss()) {
                     if (Random.Range(0.0f, 1.0f) < 0.4f) break;
@@ -73,8 +76,10 @@ namespace SangjiagouCore
                 attackerWonPossibility = attackerArmy / (2.0f * defenderArmy);
             }
             bool attackerWon = Random.Range(0.0f, 1.0f) < attackerWonPossibility;
-            return new AggressiveWar.Report(attackerWon, _initialAttackerArmy - attackerArmy, _initialDefenderArmy - defenderArmy);
+            _report = new AggressiveWar.Report(attackerWon, _initialAttackerArmy - attackerArmy, _initialDefenderArmy - defenderArmy);
         }
+
+        public new AggressiveWar.Report GetReport() => _report;
     }
 
 }

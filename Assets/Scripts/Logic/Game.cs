@@ -119,7 +119,7 @@ namespace SangjiagouCore {
             sp1.PoliTech = 50;
             sp1.MiliTech = 40;
             sp1.Scholars = new List<string> { "孔丘", "颜回" };
-            sp1.InfluenceOfSchools = new Dictionary<string, uint> {
+            sp1.InfluenceOfSchools = new Dictionary<string, int> {
                 { "儒家", 100 },
                 { "墨家", 20 }
             };
@@ -141,7 +141,7 @@ namespace SangjiagouCore {
             sp2.PoliTech = 30;
             sp2.MiliTech = 30;
             sp2.Scholars = new List<string> { "冉耕" };
-            sp2.InfluenceOfSchools = new Dictionary<string, uint> {
+            sp2.InfluenceOfSchools = new Dictionary<string, int> {
                 { "儒家", 50 },
                 { "墨家", 60 }
             };
@@ -154,10 +154,10 @@ namespace SangjiagouCore {
             State qi = new State(sp2);
             List<State> stl = new List<State> { lu, qi };
             List<Town> tl = new List<Town> {
-                new Town("曲阜", new Vector2(3.0f, 2.0f), lu, 40000, true),
-                new Town("单父", new Vector2(2.0f, 5.0f), lu, 10000, false),
-                new Town("临淄", new Vector2(1.0f, 1.0f), qi, 80000, true),
-                new Town("莒", new Vector2(6.0f, 2.0f), qi, 20000, false)
+                new Town("曲阜", new Vector2(3.0f, 2.0f), lu, 40000, true, new Dictionary<School, List<Scholar>>()),
+                new Town("单父", new Vector2(2.0f, 5.0f), lu, 10000, false, new Dictionary<School, List<Scholar>>()),
+                new Town("临淄", new Vector2(1.0f, 1.0f), qi, 80000, true, new Dictionary<School, List<Scholar>>()),
+                new Town("莒", new Vector2(6.0f, 2.0f), qi, 20000, false, new Dictionary<School, List<Scholar>>())
             };
             _currentEntities.Roads.Add((tl[0], tl[1]));
             _currentEntities.Roads.Add((tl[1], tl[0]));
@@ -167,6 +167,10 @@ namespace SangjiagouCore {
             _currentEntities.Roads.Add((tl[3], tl[2]));
             School rujia = new School("儒家", new List<Scholar>(), new List<Type> { typeof(DeclareWarAction) });
             School mojia = new School("墨家", new List<Scholar>(), new List<Type>());
+            List<Scholar> lsQufu = new List<Scholar> {
+                new Scholar("孟", "轲", "子舆", 40, 80, null, tl[0])
+            };
+            tl[0].Recruits[rujia] = lsQufu;
             List<Scholar> scl1 = new List<Scholar> {
                 new Scholar("孔", "丘", "仲尼", 70, 50, rujia, tl[0]),
                 new Scholar("颜", "回", "子渊", 40, 50, rujia, tl[0]),

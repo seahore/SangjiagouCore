@@ -16,15 +16,15 @@ namespace SangjiagouCore
             public _Color SecondaryColor;
             public Monarch.Package Monarch;
             public Monarch.Package CrownPrince;
-            public uint PoliTech;
-            public uint MiliTech;
-            public uint Population;
-            public uint Army;
-            public uint Satisfaction;
-            public uint Ceremony;
-            public uint Food;
+            public int PoliTech;
+            public int MiliTech;
+            public int Population;
+            public int Army;
+            public int Satisfaction;
+            public int Ceremony;
+            public int Food;
             public Dictionary<string, int> AttitudeTowards; // ==>  Dictionary<State, int> _attitudeTowards;
-            public Dictionary<string, uint> InfluenceOfSchools; // ==> Dictionary<School, uint> _influenceOfSchools;
+            public Dictionary<string, int> InfluenceOfSchools; // ==> Dictionary<School, int> _influenceOfSchools;
             public List<string> Scholars; // ==> List<Scholar> _scholars;
         }
         public Package Pack()
@@ -42,7 +42,7 @@ namespace SangjiagouCore
                 Ceremony = _ceremony,
                 Food = _food,
                 AttitudeTowards = new Dictionary<string, int>(),
-                InfluenceOfSchools = new Dictionary<string, uint>(),
+                InfluenceOfSchools = new Dictionary<string, int>(),
                 Scholars = new List<string>()
             };
             pkg.PrimaryColor.r = _primaryColor.r;
@@ -105,7 +105,7 @@ namespace SangjiagouCore
                     }
                 }
             }
-            _influenceOfSchools = new Dictionary<School, uint>();
+            _influenceOfSchools = new Dictionary<School, int>();
             foreach (var p in _pkg.InfluenceOfSchools) {
                 foreach (var s in Game.CurrentEntities.Schools) {
                     if (s.Name == p.Key) {
@@ -186,25 +186,26 @@ namespace SangjiagouCore
             }
         }
 
-        uint _poliTech;
-        public uint PoliTech => _poliTech;
-        public uint Politics => _poliTech + _monarch.PoliticsAbility;
+        int _poliTech;
+        public int PoliTech => _poliTech;
+        public int Politics => _poliTech + _monarch.PoliticsAbility;
 
 
-        uint _miliTech;
-        public uint MiliTech => _miliTech;
-        public uint Military => MiliTech + _monarch.MilitaryAbility;
+        int _miliTech;
+        public int MiliTech => _miliTech;
+        public int Military => MiliTech + _monarch.MilitaryAbility;
 
 
 
-        uint _population;
+        int _population;
         /// <summary>
         /// 该国人口
         /// </summary>
-        public uint Population {
+        public int Population {
             get => _population;
             set {
                 if (value > MaxPopulation) _population = MaxPopulation;
+                else if (value < 0) _population = 0;
                 else _population = value;
             }
         }
@@ -212,9 +213,9 @@ namespace SangjiagouCore
         /// <summary>
         /// 该国之总发展度
         /// </summary>
-        public uint TotalDevelopment {
+        public int TotalDevelopment {
             get {
-                uint r = 0;
+                int r = 0;
                 foreach (var i in Territory) {
                     r += i.Development;
                 }
@@ -225,16 +226,17 @@ namespace SangjiagouCore
         /// <summary>
         /// 该国之最大人口，即总发展度
         /// </summary>
-        public uint MaxPopulation => TotalDevelopment;
+        public int MaxPopulation => TotalDevelopment;
 
-        uint _army;
+        int _army;
         /// <summary>
         /// 该国之兵士数
         /// </summary>
-        public uint Army {
+        public int Army {
             get => _army;
             set {
                 if (value > MaxArmy) _army = MaxArmy;
+                else if (value < 0) _army = 0;
                 else _army = value;
             }
         }
@@ -247,35 +249,35 @@ namespace SangjiagouCore
         /// <summary>
         /// 该国兵士数自然恢复的上限
         /// </summary>
-        public uint StandingArmy => (uint)(0.15f * (float)_population);
+        public int StandingArmy => (int)(0.15f * (float)_population);
         /// <summary>
         /// 该国兵士数可强制徭役的上限
         /// </summary>
-        public uint MaxArmy => (uint)(0.3f * (float)_population);
+        public int MaxArmy => (int)(0.3f * (float)_population);
 
-        uint _satisfaction;
+        int _satisfaction;
         /// <summary>
         /// 该国民生
         /// </summary>
-        public uint Satisfaction => _satisfaction;
+        public int Satisfaction => _satisfaction;
 
-        uint _ceremony;
+        int _ceremony;
         /// <summary>
         /// 该国礼乐
         /// </summary>
-        public uint Ceremony => _ceremony;
+        public int Ceremony => _ceremony;
 
-        uint _food;
+        int _food;
         /// <summary>
         /// 该国粮食储量
         /// </summary>
-        public uint Food => _food;
+        public int Food => _food;
 
-        Dictionary<School, uint> _influenceOfSchools;
+        Dictionary<School, int> _influenceOfSchools;
         /// <summary>
         /// 各家在该国的影响力
         /// </summary>
-        public Dictionary<School, uint> InfluenceOfSchools => _influenceOfSchools;
+        public Dictionary<School, int> InfluenceOfSchools => _influenceOfSchools;
 
         List<Scholar> _scholars;
         /// <summary>
@@ -292,7 +294,7 @@ namespace SangjiagouCore
 
         public float InfluenceRatio(School school)
         {
-            uint sum = 0;
+            int sum = 0;
             foreach (var p in InfluenceOfSchools.Values) {
                 sum += p;
             }
@@ -301,17 +303,17 @@ namespace SangjiagouCore
 
 
 
-        uint PopulationUpdate()
+        int PopulationUpdate()
         {
-            uint newPopulation = (uint)((1.01f + 0.0002f * _satisfaction) * _population);
+            int newPopulation = (int)((1.01f + 0.0002f * _satisfaction) * _population);
             if (newPopulation > MaxPopulation) return MaxPopulation;
             else return newPopulation;
         }
 
-        uint SatisfactionUpdate()
+        int SatisfactionUpdate()
         {
-            uint newSatisfaction = (uint)(_satisfaction - 2 + 0.02f * _ceremony + 0.01f * Politics);
-            if (_food > 0 && _food < (uint)(0.05f * _population)) {
+            int newSatisfaction = (int)(_satisfaction - 2 + 0.02f * _ceremony + 0.01f * Politics);
+            if (_food > 0 && _food < (int)(0.05f * _population)) {
                 newSatisfaction -= 3;
             } else if (_food == 0) {
                 newSatisfaction -= 15;
@@ -319,17 +321,17 @@ namespace SangjiagouCore
             return newSatisfaction;
         }
 
-        uint FoodUpdate()
+        int FoodUpdate()
         {
             float[] Harvest = { 0.0f, 1.0f, 1.2f, 1.2f, 1.2f, 1.1f, 1.3f, 1.8f, 2.4f, 2.0f, 1.5f, 1.1f, 1.0f };
-            uint newFood = (uint)(_food - 0.01f * _population + 0.01f * (0.6f * _army + 0.6f * _population) * 0.01f * _satisfaction * (1.0f + 0.01f * Politics) * Harvest[Game.CurrentEntities.Month]);
+            int newFood = (int)(_food - 0.01f * _population + 0.01f * (0.6f * _army + 0.6f * _population) * 0.01f * _satisfaction * (1.0f + 0.01f * Politics) * Harvest[Game.CurrentEntities.Month]);
             return newFood;
         }
 
-        uint ArmyUpdate()
+        int ArmyUpdate()
         {
             if (_army < StandingArmy) {
-                uint newArmy = _army + (uint)(0.02f * _population * 0.01f * _satisfaction);
+                int newArmy = _army + (int)(0.02f * _population * 0.01f * _satisfaction);
                 return newArmy;
             }
             return _army;

@@ -9,15 +9,35 @@ namespace SangjiagouCore
     /// <summary>
     /// 对策行动，向某国的行动候选队列加入一个国家行动
     /// </summary>
-    public class ProposeAction : ScholarAction
+    public class ProposeAction : ScholarAction, IReportable<ProposeAction.Report>
     {
+        public struct Report
+        {
+            bool _successful;
+            public bool Successful => _successful;
+
+            public Report(bool successful)
+            {
+                _successful = successful;
+            }
+        }
+        Report _report;
+
+
         StateAction _proposition;
+        public StateAction Proposition => _proposition;
 
         public override void Act()
         {
-            _place.Controller.ActionQueue.Add(_proposition);
-        }
+            float possibility = 0.5f + StateAt.InfluenceOfSchools[ActSchool] * 0.01f;
 
+            if (Random.Range(0.0f, 1.0f) < possibility) {
+                _report = new Report(true);
+                StateAt.ActionQueue.Add(_proposition);
+            } else {
+                _report = new Report(false);
+            }
+        }
 
 
         public ProposeAction(Scholar actor, Town place, StateAction proposition)
@@ -30,6 +50,8 @@ namespace SangjiagouCore
 
             _proposition = proposition;
         }
+
+        public Report GetReport() => _report;
     }
 
 }

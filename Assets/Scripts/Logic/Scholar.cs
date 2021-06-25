@@ -15,10 +15,10 @@ namespace SangjiagouCore {
             public string FamilyName;
             public string GivenName;
             public string CourtesyName;
-            public uint Age;
+            public int Age;
             // public string BelongTo; // ==> School _belongTo;
             public string Location; // ==> Town _location;
-            public uint Sophistry;
+            public int Sophistry;
         }
 
         public Package Pack()
@@ -96,11 +96,11 @@ namespace SangjiagouCore {
         /// </summary>
         public string FullCourtesyName => _familyName + _courtesyName;
 
-        uint _age;
+        int _age;
         /// <summary>
         /// 诸子其年寿
         /// </summary>
-        public uint Age => _age;
+        public int Age => _age;
 
         School _belongTo;
         public School BelongTo => _belongTo;
@@ -125,14 +125,23 @@ namespace SangjiagouCore {
             }
         }
 
-        uint _sophistry;
+        int _sophistry;
         /// <summary>
         /// 诸子其诡辩
         /// </summary>
-        public uint Sophistry { get => _sophistry; }
+        public int Sophistry { get => _sophistry; }
 
         ScholarAction _action;
         public ScholarAction Action { get => _action; set { _action = value; } }
+
+
+        public static Scholar CreateRandomScholar()
+        {
+            // Todo:
+            return new Scholar();
+        }
+
+
 
         public Scholar()
         {
@@ -146,7 +155,7 @@ namespace SangjiagouCore {
             Unpack(pkg);
             _belongTo = belongTo;
         }
-        public Scholar(string familyName, string givenName, string courtesyName, uint age, uint sophistry, School belongTo, Town location)
+        public Scholar(string familyName, string givenName, string courtesyName, int age, int sophistry, School belongTo, Town location)
         {
             _familyName = familyName;
             _givenName = givenName;
