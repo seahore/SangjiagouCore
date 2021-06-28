@@ -51,7 +51,7 @@ public class TestUI : MonoBehaviour
     public void OnAIButton()
     {
         foreach (var s in Game.CurrentEntities.Schools) {
-            s.AIControl();
+            s.AIPlan();
         }
         return;
     }

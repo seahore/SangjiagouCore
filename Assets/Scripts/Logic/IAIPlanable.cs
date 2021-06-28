@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace SangjiagouCore {
 
-    public interface IAIControllable
+    public interface IAIPlanable
     {
-        public void AIControl();
+        public void AIPlan();
     }
 
 }

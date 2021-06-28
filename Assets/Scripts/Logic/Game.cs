@@ -110,6 +110,7 @@ namespace SangjiagouCore {
         {
             Monarch.Package mp1 = new Monarch.Package();
             mp1.Name = "鲁庄公";
+            mp1.Aggressiveness = -50;
             State.Package sp1 = new State.Package();
             sp1.Name = "鲁";
             sp1.Monarch = mp1;
@@ -132,6 +133,7 @@ namespace SangjiagouCore {
             State lu = new State(sp1);
             Monarch.Package mp2 = new Monarch.Package();
             mp2.Name = "齐桓公";
+            mp2.Aggressiveness = 90;
             State.Package sp2 = new State.Package();
             sp2.Name = "齐";
             sp2.Monarch = mp2;

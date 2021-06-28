@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SangjiagouCore
 {
 
-    public class State : IPackable<State.Package>, IAIControllable
+    public class State : IPackable<State.Package>, IAIPlanable
     {
         public class Package
         {
@@ -286,10 +286,15 @@ namespace SangjiagouCore
         public List<Scholar> Scholars => _scholars;
         // 由于Scholar亦有一个所在国属性，所以State类是否需要另外维护一个Scholar的列表，仍旧应该讨论
 
+        StateAction _formerAction;
+        public StateAction FormerAction => _formerAction;
 
+        StateAction _selectedAction;
 
         List<StateAction> _actionQueue;
         public List<StateAction> ActionQueue => _actionQueue;
+
+
 
 
         public float InfluenceRatio(School school)
@@ -335,18 +340,6 @@ namespace SangjiagouCore
                 return newArmy;
             }
             return _army;
-        }
-
-        /// <summary>
-        /// 进行下一回合
-        /// </summary>
-        public void NextTurn()
-        {
-            // MakeDecision();
-            _population = PopulationUpdate();
-            _satisfaction = SatisfactionUpdate();
-            _food = FoodUpdate();
-            _army = ArmyUpdate();
         }
 
 
@@ -408,11 +401,39 @@ namespace SangjiagouCore
             }
         }
 
-        public void AIControl()
+        public void AIPlan()
         {
-
+            if (ActionQueue.Count != 0) {
+                static int ActionCompare(StateAction x, StateAction y)
+                {
+                    float ax = x.Assess(), ay = y.Assess();
+                    if (ax > ay) return 1;
+                    return ax == ay ? 0 : -1;
+                }
+                ActionQueue.Sort(ActionCompare);
+                _selectedAction = ActionQueue[0];
+            } else {
+                _selectedAction = null;
+            }
         }
 
+
+        /// <summary>
+        /// 进行下一回合
+        /// </summary>
+        public void NextTurn()
+        {
+            AIPlan();
+            if (!(_selectedAction is null))
+                _selectedAction.Act();
+            _formerAction = _selectedAction;
+            ActionQueue.Clear();
+
+            _population = PopulationUpdate();
+            _satisfaction = SatisfactionUpdate();
+            _food = FoodUpdate();
+            _army = ArmyUpdate();
+        }
 
 
 

@@ -170,6 +170,9 @@ namespace SangjiagouCore
         public void NextTurn()
         {
             ++_totalMonth;
+            foreach(var s in _schools){
+                s.NextTurn();
+            }
             foreach (var s in _states) {
                 s.NextTurn();
             }

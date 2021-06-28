@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SangjiagouCore {
 
-    public class School : IPackable<School.Package>, IAIControllable
+    public class School : IPackable<School.Package>, IAIPlanable
     {
         public class Package
         {
@@ -55,6 +55,15 @@ namespace SangjiagouCore {
             _pkg = null;
         }
 
+        int _playerID;
+        /// <summary>
+        /// 玩家标识符，若为0则是AI
+        /// </summary>
+        public int PlayerID => _playerID;
+        /// <summary>
+        /// 是否是AI控制，即玩家标识符是否为0
+        /// </summary>
+        public bool IsAI => _playerID == 0;
 
         string _name;
         /// <summary>
@@ -78,23 +87,12 @@ namespace SangjiagouCore {
         /// </summary>
         public List<Type> AllowedPropositionTypes => _allowedPropositionTypes;
 
-        public void ExecuteMemberActions()
+
+        public void AIPlan()
         {
-            foreach (var s in _members) {
-                if (!(s.Action is null)) {
-                    s.Action.Act();
-                    s.Action = null;
-                }
-            }
-        }
+            List<Scholar> unassigned = new List<Scholar>(Members);  // 还未分配任务的诸子列表
 
-
-
-        public void AIControl()
-        {
-            List<Scholar> unassigned = new List<Scholar>(Members);
-
-
+            // 选取影响力占比最小的国家增加影响力
             List<State> states = new List<State>(Game.CurrentEntities.States);
             int stateCompare(State x, State y)
             {
@@ -120,9 +118,19 @@ namespace SangjiagouCore {
                 else
                     unassigned[0].Action = new DiscussWithMonarchAction(unassigned[0], unassigned[0].Location);
             }
-
-            ExecuteMemberActions();
         }
+
+        public void NextTurn()
+        {
+            if (IsAI)
+                AIPlan();
+
+            foreach (var s in _members) {
+                s.DoAction();
+            }
+        }
+
+
 
 
         public School()

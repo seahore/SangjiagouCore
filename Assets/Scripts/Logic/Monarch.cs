@@ -12,6 +12,7 @@ namespace SangjiagouCore {
             public string Name;
             public int PoliticsAbility;
             public int MilitaryAbility;
+            public int Aggressiveness;
             public bool IsInvader;
         }
         public Package Pack()
@@ -20,6 +21,7 @@ namespace SangjiagouCore {
                 Name = _name,
                 PoliticsAbility = _politicsAbility,
                 MilitaryAbility = _militaryAbility,
+                Aggressiveness = _aggressiveness,
                 IsInvader = _isInvader
             };
             return pkg;
@@ -31,6 +33,7 @@ namespace SangjiagouCore {
             _name = _pkg.Name;
             _politicsAbility = _pkg.PoliticsAbility;
             _militaryAbility = _pkg.MilitaryAbility;
+            _aggressiveness = pkg.Aggressiveness;
             _isInvader = _pkg.IsInvader;
         }
         public void Relink()
@@ -42,13 +45,16 @@ namespace SangjiagouCore {
         }
 
         string _name;
-        public string Name { get => _name; }
+        public string Name => _name;
 
         int _politicsAbility;
-        public int PoliticsAbility { get => _politicsAbility; }
+        public int PoliticsAbility => _politicsAbility; 
 
         int _militaryAbility;
-        public int MilitaryAbility { get => _militaryAbility; }
+        public int MilitaryAbility => _militaryAbility;
+
+        int _aggressiveness;
+        public int Aggressiveness => _aggressiveness;
 
         bool _isInvader;
         public bool IsInvader { get => _isInvader; set { _isInvader = value; } }
@@ -57,10 +63,11 @@ namespace SangjiagouCore {
         {
             Unpack(pkg);
         }
-        public Monarch(string name, int politicsAbility, int militaryAbility) {
+        public Monarch(string name, int politicsAbility, int aggressiveness, int militaryAbility) {
             _name = name;
             _politicsAbility = politicsAbility;
             _militaryAbility = militaryAbility;
+            _aggressiveness = aggressiveness;
             _isInvader = false;
         }
     }

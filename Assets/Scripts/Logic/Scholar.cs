@@ -131,9 +131,20 @@ namespace SangjiagouCore {
         /// </summary>
         public int Sophistry { get => _sophistry; }
 
+        ScholarAction _formerAction;
+        public ScholarAction FormerAction => _formerAction;
+
         ScholarAction _action;
         public ScholarAction Action { get => _action; set { _action = value; } }
 
+        public void DoAction()
+        {
+            if (!(_action is null)) {
+                _action.Act();
+            }
+            _formerAction = _action;
+            _action = null;
+        }
 
         public static Scholar CreateRandomScholar()
         {
