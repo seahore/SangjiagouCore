@@ -41,13 +41,8 @@ namespace SangjiagouCore {
             path += Path.DirectorySeparatorChar + fileName;
             FileStream file;
             BinaryReader br;
-            try {
-                file = new FileStream(path, FileMode.Open);
-                br = new BinaryReader(file);
-            } catch (IOException ioe) {
-                Debug.LogWarning(ioe.Message);
-                throw new IOException("存档文件正在被占用", ioe);
-            }
+            file = new FileStream(path, FileMode.Open);
+            br = new BinaryReader(file);
             string json;
             if (encrypted) {
                 byte[] encryptedData = Convert.FromBase64String(br.ReadString());
@@ -83,13 +78,8 @@ namespace SangjiagouCore {
 
             FileStream saveFile;
             BinaryWriter bw;
-            try {
-                saveFile = new FileStream(saveFilePath, FileMode.Create);
-                bw = new BinaryWriter(saveFile);
-            } catch (IOException ioe) {
-                Debug.LogWarning(ioe.Message);
-                throw new IOException("存档文件正在被占用", ioe);
-            }
+            saveFile = new FileStream(saveFilePath, FileMode.Create);
+            bw = new BinaryWriter(saveFile);
             if (encrypt) {
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 DESCryptoServiceProvider des = new DESCryptoServiceProvider();

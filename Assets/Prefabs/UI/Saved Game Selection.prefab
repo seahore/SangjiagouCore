@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2845228979117159707}
   - component: {fileID: 2845228979117159705}
   - component: {fileID: 2845228979117159706}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Button Face
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 2845228979468410467}
   - component: {fileID: 2845228979468410465}
   - component: {fileID: 2845228979468410466}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Date Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 2845228979910258713}
   - component: {fileID: 2845228979910258695}
   - component: {fileID: 2845228979910258712}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Border Mark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 2845228980709003323}
   - component: {fileID: 2845228980709003321}
   - component: {fileID: 2845228980709003322}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Filename
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -318,7 +318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2845228980968305769}
   - component: {fileID: 2845228980968305768}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Saved Game Selection
   m_TagString: Untagged
   m_Icon: {fileID: 0}

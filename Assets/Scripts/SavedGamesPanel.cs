@@ -13,6 +13,10 @@ public class SavedGamesPanel : MonoBehaviour
 
     void Start()
     {
+        var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
+        mainCam.GetComponent<ScreenBlurFX>().BlurSizeChangeTo(0.2f);
+
+        // 检查存档目录下的所有存档，一一在SavedGamesPanel中生成一个项
         _savedGames = new DirectoryInfo(Game.SavesPath).GetFiles();
         var l = transform.Find("Scroll View/Viewport/Saved Games List");
         var unitHeight = SavedGameSelection.GetComponent<RectTransform>().rect.height;
@@ -32,6 +36,17 @@ public class SavedGamesPanel : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        if (GameObject.Find("Upper UI Canvas").transform.childCount > 1)
+            return;
+
+        var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
+        mainCam.GetComponent<ScreenBlurFX>().BlurSizeChangeTo(0);
+        var mask = GameObject.FindGameObjectWithTag("UpperUIMask");
+        if (!(mask is null)) Destroy(mask);
+    }
+
     public void OnCloseButtonClick()
     {
         Destroy(gameObject);
@@ -39,6 +54,25 @@ public class SavedGamesPanel : MonoBehaviour
 
     public void OnSaveButtonClick()
     {
+        try {
+            Game.SaveGame(transform.Find("Filename Input").GetComponent<InputField>().text.Trim(), false);
+        } catch (IOException) {
+            GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
+        }
+        OnCloseButtonClick();
+    }
+
+    public void OnLoadButtonClick()
+    {
+        string filename = transform.Find("Filename Input").GetComponent<InputField>().text.Trim();
+        if (filename == "") return;
+        try {
+            Game.LoadGame(filename, false);
+        } catch(FileNotFoundException) {
+            GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"\'{filename}\'无效。");
+        } catch (IOException) {
+            GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
+        }
 
     }
 }
