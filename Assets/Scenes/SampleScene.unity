@@ -626,6 +626,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -656,10 +657,9 @@ MonoBehaviour:
   BlurMat: {fileID: 2100000, guid: 3087472ea39515e4aae1d10d12bc7065, type: 2}
   BlurSize: 0
   BlurIteration: 5
-  BlurSpread: 1
+  BlurSpread: 2
   BlurDownSample: 2
-  RenderBlurFX: 0
-  fadeVelocity: 1
+  RenderBlurFX: 1
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -717,6 +717,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &519420033
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b4be426b7bb93404d87ba65b8577dcd4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &548531133
 GameObject:
   m_ObjectHideFlags: 0
@@ -1056,12 +1075,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -1136,7 +1155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3075eb684db9ad3428ad1fd291377320, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UpperUIMaskPrefab: {fileID: 7664512199129147264, guid: 8bfc4d3776abeed40926fdec2b41b7db, type: 3}
   SavedGamesPanelrefab: {fileID: 7889202764784799244, guid: 424890a4d738215458b752b08204290c, type: 3}
   WarningBoxPrefab: {fileID: 7968050047388240321, guid: 9361eaed7138b6e4d923ad793468b57a, type: 3}
 --- !u!4 &1095273956
@@ -1676,13 +1694,14 @@ GameObject:
   - component: {fileID: 1880644848}
   - component: {fileID: 1880644850}
   - component: {fileID: 1880644849}
+  - component: {fileID: 1880644851}
   m_Layer: 5
   m_Name: Menu Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1880644848
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1744,6 +1763,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1880644847}
   m_CullTransparentMesh: 1
+--- !u!95 &1880644851
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880644847}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3a0511c90b075dd4eb8947e407fad7aa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2007266953
 GameObject:
   m_ObjectHideFlags: 0

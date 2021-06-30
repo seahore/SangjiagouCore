@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7664512199129147271}
   - component: {fileID: 7664512199129147270}
   m_Layer: 5
-  m_Name: Upper UI Mask
+  m_Name: UI Mask
   m_TagString: UpperUIMask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

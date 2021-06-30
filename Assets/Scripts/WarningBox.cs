@@ -7,26 +7,28 @@ using UnityEngine;
 /// </summary>
 public class WarningBox : MonoBehaviour
 {
+    public GameObject MaskPrefab;
     // Start is called before the first frame update
     void Start()
     {
-        var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-        mainCam.GetComponent<ScreenBlurFX>().BlurSizeChangeTo(0.2f);
-    }
-
-    void OnDestroy()
-    {
-        if (GameObject.Find("Upper UI Canvas").transform.childCount > 1)
-            return;
-
-        var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-        mainCam.GetComponent<ScreenBlurFX>().BlurSizeChangeTo(0);
-        var mask = GameObject.FindGameObjectWithTag("UpperUIMask");
-        if (!(mask is null)) Destroy(mask);
+        var mask = Instantiate(MaskPrefab, transform.parent);
+        transform.SetParent(mask.transform);
     }
 
     public void OnCloseButtonClick()
     {
-        Destroy(gameObject);
+        if (GameObject.Find("Upper UI Canvas").transform.childCount <= 1) {
+            var mask = GameObject.FindGameObjectWithTag("UpperUIMask");
+            if (!(mask is null)) Destroy(mask);
+        }
+        GetComponent<Animator>().SetTrigger("Close");
+    }
+
+    /// <summary>
+    /// 这个函数会在关闭动画的最后调用
+    /// </summary>
+    public void OnCloseAnimationFinished()
+    {
+        Destroy(transform.parent.gameObject);
     }
 }

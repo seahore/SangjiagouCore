@@ -7,14 +7,18 @@ using SangjiagouCore;
 
 public class SavedGamesPanel : MonoBehaviour
 {
+    public GameObject MaskPrefab;
     public GameObject SavedGameSelection;
 
     FileInfo[] _savedGames;
 
     void Start()
     {
+        var mask = Instantiate(MaskPrefab, transform.parent);
+        transform.SetParent(mask.transform);
+
         var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-        mainCam.GetComponent<ScreenBlurFX>().BlurSizeChangeTo(0.2f);
+        mainCam.GetComponent<Animator>().SetTrigger("Unfocus");
 
         // 检查存档目录下的所有存档，一一在SavedGamesPanel中生成一个项
         _savedGames = new DirectoryInfo(Game.SavesPath).GetFiles();
@@ -36,30 +40,36 @@ public class SavedGamesPanel : MonoBehaviour
         }
     }
 
-    void OnDestroy()
-    {
-        if (GameObject.Find("Upper UI Canvas").transform.childCount > 1)
-            return;
-
-        var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-        mainCam.GetComponent<ScreenBlurFX>().BlurSizeChangeTo(0);
-        var mask = GameObject.FindGameObjectWithTag("UpperUIMask");
-        if (!(mask is null)) Destroy(mask);
-    }
-
     public void OnCloseButtonClick()
     {
-        Destroy(gameObject);
+        if (GameObject.Find("Upper UI Canvas").transform.childCount <= 1) {
+            var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
+            mainCam.GetComponent<Animator>().SetTrigger("Focus");
+        }
+        GetComponent<Animator>().SetTrigger("Close");
+    }
+
+    /// <summary>
+    /// 这个函数会在关闭动画的最后调用
+    /// </summary>
+    public void OnCloseAnimationFinished()
+    {
+        Destroy(transform.parent.gameObject);
     }
 
     public void OnSaveButtonClick()
     {
         try {
-            Game.SaveGame(transform.Find("Filename Input").GetComponent<InputField>().text.Trim(), false);
+            string filename = transform.Find("Filename Input").GetComponent<InputField>().text.Trim();
+            if (filename != "") {
+                Game.SaveGame(transform.Find("Filename Input").GetComponent<InputField>().text.Trim(), false);
+                OnCloseButtonClick();
+            } else {
+
+            }
         } catch (IOException) {
             GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
         }
-        OnCloseButtonClick();
     }
 
     public void OnLoadButtonClick()

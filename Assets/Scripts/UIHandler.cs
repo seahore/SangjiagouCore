@@ -6,7 +6,6 @@ using SangjiagouCore;
 
 public class UIHandler : MonoBehaviour
 {
-    public GameObject UpperUIMaskPrefab;
     public GameObject SavedGamesPanelrefab;
     public GameObject WarningBoxPrefab;
 
@@ -30,7 +29,8 @@ public class UIHandler : MonoBehaviour
 
     public void OnMenuButtonClick()
     {
-        GameObject.Find("UI Canvas").transform.Find("Menu Panel").gameObject.SetActive(!GameObject.Find("UI Canvas").transform.Find("Menu Panel").gameObject.activeInHierarchy);
+        var anim = GameObject.Find("Menu Panel").GetComponent<Animator>();
+        anim.SetBool("Open", !anim.GetBool("Open"));
     }
 
     public void OnQuickSaveButtonClick()
@@ -45,7 +45,6 @@ public class UIHandler : MonoBehaviour
     }
     public void OnSavedGamesButtonClick()
     {
-        Instantiate(UpperUIMaskPrefab, GameObject.Find("UI Canvas").transform);
         Instantiate(SavedGamesPanelrefab, GameObject.Find("Upper UI Canvas").transform);
     }
 

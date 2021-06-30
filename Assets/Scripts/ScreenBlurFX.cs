@@ -22,32 +22,6 @@ public class ScreenBlurFX : MonoBehaviour
     public int BlurDownSample = 4; // 模糊初始降采样比率
     public bool RenderBlurFX = false; // 是否开始渲染模糊效果
 
-    float sampleTarget;
-    public float fadeVelocity = 0.5f;
-
-    void Start()
-    {
-        sampleTarget = BlurSize;
-    }
-
-    void Update()
-    {
-        if (fadeVelocity != 0.0f) {
-            float newVal;
-            if (BlurSize < sampleTarget) {
-                newVal = BlurSize + (fadeVelocity * Time.deltaTime);
-                BlurSize = newVal > sampleTarget ? sampleTarget : newVal;
-            } else {
-                newVal = BlurSize - (fadeVelocity * Time.deltaTime);
-                BlurSize = newVal < sampleTarget ? sampleTarget : newVal;
-            }
-            RenderBlurFX = BlurSize < 0.001f ? false : true;
-        }
-    }
-
-    public void BlurSizeChangeTo(float newVal) => sampleTarget = newVal;
-
-
     void OnRenderImage(RenderTexture src, RenderTexture dest)
     {
         if (BlurMat != null && RenderBlurFX) {

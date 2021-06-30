@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7968050047388240320}
   - component: {fileID: 7968050047388240334}
   - component: {fileID: 7968050047388240335}
+  - component: {fileID: 918159391633654638}
   - component: {fileID: 7968050047388240333}
   m_Layer: 6
   m_Name: Warning Box
@@ -78,6 +79,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!95 &918159391633654638
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7968050047388240321}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 096a19675ab0f6344848bfc57329c022, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &7968050047388240333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7cc28bde4b18b8468a8d0bf47823b9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaskPrefab: {fileID: 7664512199129147264, guid: 8bfc4d3776abeed40926fdec2b41b7db, type: 3}
 --- !u!1 &7968050047866760381
 GameObject:
   m_ObjectHideFlags: 0
