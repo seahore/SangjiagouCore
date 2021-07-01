@@ -16,10 +16,12 @@ namespace SangjiagouCore
         /// </summary>
         public class Package
         {
+            public struct _Vector2Int { public int x, y; }
             public int TotalMonth;
             public List<School.Package> Schools;
             public List<State.Package> States;
             public List<Town.Package> Towns;
+            public _Vector2Int MapSize;
             public List<List<string>> Roads; // ==> HashSet<(Town, Town)> _roads;
         }
         public Package Pack()
@@ -29,6 +31,7 @@ namespace SangjiagouCore
                 Schools = new List<School.Package>(),
                 States = new List<State.Package>(),
                 Towns = new List<Town.Package>(),
+                MapSize = new Package._Vector2Int { x = _mapSize.x, y = _mapSize.y },
                 Roads = new List<List<string>>()
             };
             foreach (var s in _schools) {
@@ -68,6 +71,7 @@ namespace SangjiagouCore
                 t.Unpack(tp);
                 _towns.Add(t);
             }
+            _mapSize = new Vector2Int(pkg.MapSize.x, pkg.MapSize.y);
         }
         public void Relink()
         {
@@ -164,6 +168,12 @@ namespace SangjiagouCore
         /// </summary>
         public HashSet<(Town, Town)> Roads => _roads;
 
+        Vector2Int _mapSize;
+        /// <summary>
+        /// 地图大小
+        /// </summary>
+        public Vector2Int MapSize => _mapSize;
+
         /// <summary>
         /// 进行下一回合
         /// </summary>
@@ -185,6 +195,7 @@ namespace SangjiagouCore
             _states = new List<State>();
             _towns = new List<Town>();
             _roads = new HashSet<(Town, Town)>();
+            _mapSize = new Vector2Int(10, 10);
         }
     }
 

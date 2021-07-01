@@ -146,10 +146,10 @@ namespace SangjiagouCore {
             State qi = new State(sp2);
             List<State> stl = new List<State> { lu, qi };
             List<Town> tl = new List<Town> {
-                new Town("曲阜", new Vector2(3.0f, 2.0f), lu, 40000, true, new Dictionary<School, List<Scholar>>()),
-                new Town("单父", new Vector2(2.0f, 5.0f), lu, 10000, false, new Dictionary<School, List<Scholar>>()),
-                new Town("临淄", new Vector2(1.0f, 1.0f), qi, 80000, true, new Dictionary<School, List<Scholar>>()),
-                new Town("莒", new Vector2(6.0f, 2.0f), qi, 20000, false, new Dictionary<School, List<Scholar>>())
+                new Town("曲阜", new Vector2Int(3, 2), lu, 40000, true, new Dictionary<School, List<Scholar>>()),
+                new Town("单父", new Vector2Int(2, 5), lu, 10000, false, new Dictionary<School, List<Scholar>>()),
+                new Town("临淄", new Vector2Int(1, 1), qi, 80000, true, new Dictionary<School, List<Scholar>>()),
+                new Town("莒", new Vector2Int(6, 2), qi, 20000, false, new Dictionary<School, List<Scholar>>())
             };
             _currentEntities.Roads.Add((tl[0], tl[1]));
             _currentEntities.Roads.Add((tl[1], tl[0]));

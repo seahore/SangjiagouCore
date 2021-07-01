@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Tilemaps;
 using SangjiagouCore;
 
 public class SavedGamesPanel : MonoBehaviour
@@ -83,6 +84,6 @@ public class SavedGamesPanel : MonoBehaviour
         } catch (IOException) {
             GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
         }
-
+        GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
     }
 }

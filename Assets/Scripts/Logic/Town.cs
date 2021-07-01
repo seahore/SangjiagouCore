@@ -11,8 +11,8 @@ namespace SangjiagouCore
         public class Package
         {
             public string Name;
-            public struct _Vector2 { public float x, y; }
-            public _Vector2 Position;
+            public struct _Vector2Int { public int x, y; }
+            public _Vector2Int Position;
             public string Controller; // ==> State _controller;
             public int Development;
             public bool IsCapital;
@@ -22,7 +22,7 @@ namespace SangjiagouCore
         {
             Package pkg = new Package {
                 Name = _name,
-                Position = new Package._Vector2 { x = _position.x , y = _position.y },
+                Position = new Package._Vector2Int { x = _position.x , y = _position.y },
                 Controller = _controller.Name,
                 Development = _development,
                 IsCapital = _isCapital,
@@ -44,7 +44,7 @@ namespace SangjiagouCore
         {
             _pkg = pkg;
             _name = _pkg.Name;
-            _position = new Vector2(_pkg.Position.x, _pkg.Position.y);
+            _position = new Vector2Int(_pkg.Position.x, _pkg.Position.y);
             _development = _pkg.Development;
             _isCapital = _pkg.IsCapital;
             _unlinkRecruits = new Dictionary<string, List<Scholar>>();
@@ -92,11 +92,11 @@ namespace SangjiagouCore
         /// </summary>
         public string Name { get => _name; }
 
-        Vector2 _position;
+        Vector2Int _position;
         /// <summary>
         /// 该城在地图上的位置
         /// </summary>
-        public Vector2 Position { get => _position; }
+        public Vector2Int Position { get => _position; }
 
         State _controller;
         /// <summary>
@@ -150,7 +150,7 @@ namespace SangjiagouCore
         {
             Unpack(pkg);
         }
-        public Town(string name, Vector2 pos, State ctrl, int dev, bool isCap, Dictionary<School, List<Scholar>> recruits)
+        public Town(string name, Vector2Int pos, State ctrl, int dev, bool isCap, Dictionary<School, List<Scholar>> recruits)
         {
             _name = name;
             _position = pos;
