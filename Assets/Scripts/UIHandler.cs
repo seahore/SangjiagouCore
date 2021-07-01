@@ -6,7 +6,9 @@ using SangjiagouCore;
 
 public class UIHandler : MonoBehaviour
 {
+    public GameObject UpperUICanvas;
     public GameObject SavedGamesPanelrefab;
+    public GameObject SettingsPanelPrefab;
     public GameObject WarningBoxPrefab;
 
     // Start is called before the first frame update
@@ -23,7 +25,7 @@ public class UIHandler : MonoBehaviour
 
     public void ShowWarningBox(string message)
     {
-        var o = Instantiate(WarningBoxPrefab, GameObject.Find("Upper UI Canvas").transform);
+        var o = Instantiate(WarningBoxPrefab, UpperUICanvas.transform);
         o.transform.Find("Text").GetComponent<Text>().text = message;
     }
 
@@ -45,7 +47,12 @@ public class UIHandler : MonoBehaviour
     }
     public void OnSavedGamesButtonClick()
     {
-        Instantiate(SavedGamesPanelrefab, GameObject.Find("Upper UI Canvas").transform);
+        Instantiate(SavedGamesPanelrefab, UpperUICanvas.transform);
+    }
+
+    public void OnSettingsButtonClick()
+    {
+        Instantiate(SettingsPanelPrefab, UpperUICanvas.transform);
     }
 
     public void OnExitGameButtonClick()
