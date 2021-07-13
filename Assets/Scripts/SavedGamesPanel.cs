@@ -85,5 +85,6 @@ public class SavedGamesPanel : MonoBehaviour
             GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
         }
         GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
+        OnCloseButtonClick();
     }
 }
