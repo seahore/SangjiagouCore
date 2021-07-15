@@ -749,8 +749,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a6443eb499e2334a8e29f58e9a9d6d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 10
+  ScrollSpeed: 10
   ScrollTriggerEdgeWidth: 20
+  ScrollEasingTime: 0.1
+  ZoomSpeed: 15
+  ZoomEasingTime: 0.1
+  MaxZoomDistance: 10
+  MinZoomDistance: 2
   PixelsPerUnit: 100
 --- !u!1 &548531133
 GameObject:
