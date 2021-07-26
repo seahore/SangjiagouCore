@@ -12,6 +12,7 @@ public class MapRenderer : MonoBehaviour
     public Tilemap Tilemap;
     public TileBase TownTile;
     public int PixelsPerUnit = 100;
+    public GameObject ColorMaskPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,16 @@ public class MapRenderer : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void Paint(Vector2Int pos, Color color)
+    {
+        color.a = 0.5f;
+        GameObject o = Instantiate(ColorMaskPrefab);
+        o.transform.SetParent(transform);
+        o.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, transform.position.z - 10), Quaternion.identity);
+        o.GetComponent<SpriteRenderer>().material = new Material(Shader.Find("Sprites/Default"));
+        o.GetComponent<SpriteRenderer>().material.SetColor("_Color", color);
     }
 
     public void RefreshMap()
@@ -45,6 +56,7 @@ public class MapRenderer : MonoBehaviour
 
         foreach (var t in Game.CurrentEntities.Towns) {
             Tilemap.SetTile(new Vector3Int(t.Position.x, t.Position.y, 0), TownTile);
+            Paint(t.Position, t.Controller.PrimaryColor);
         }
     }
 }

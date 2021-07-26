@@ -69,7 +69,7 @@ public class SavedGamesPanel : MonoBehaviour
 
             }
         } catch (IOException) {
-            GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
+            GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
         }
     }
 
@@ -80,9 +80,9 @@ public class SavedGamesPanel : MonoBehaviour
         try {
             Game.LoadGame(filename, false);
         } catch(FileNotFoundException) {
-            GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"\'{filename}\'无效。");
+            GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>().ShowWarningBox($"\'{filename}\'无效。");
         } catch (IOException) {
-            GameObject.Find("UI Handler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
+            GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
         }
         GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
         OnCloseButtonClick();

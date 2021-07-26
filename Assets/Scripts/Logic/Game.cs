@@ -102,6 +102,7 @@ namespace SangjiagouCore {
             mp1.Name = "鲁庄公";
             mp1.Aggressiveness = -50;
             State.Package sp1 = new State.Package();
+            sp1.PrimaryColor = new State.Package._Color { r = 0.70f, g = 0.20f, b = 0.40f };
             sp1.Name = "鲁";
             sp1.Monarch = mp1;
             sp1.Food = 1000000;
@@ -125,6 +126,7 @@ namespace SangjiagouCore {
             mp2.Name = "齐桓公";
             mp2.Aggressiveness = 90;
             State.Package sp2 = new State.Package();
+            sp2.PrimaryColor = new State.Package._Color { r = 0.10f, g = 0.80f, b = 0.50f };
             sp2.Name = "齐";
             sp2.Monarch = mp2;
             sp2.Food = 1500000;

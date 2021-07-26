@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using SangjiagouCore;
 
 [RequireComponent(typeof(Camera))]
@@ -47,6 +48,9 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        var mouse = Mouse.current;
+        if (mouse is null) return;
+
         #region 摄像机移动
 
         border = new Vector3 {
@@ -55,10 +59,10 @@ public class CameraController : MonoBehaviour
             z = 0
         };
         // 如果摄像机位置出某一边的边界，那么那个方向的运动被禁止
-        bool up = upArea.Contains(Input.mousePosition) && transform.position.y <= border.y;
-        bool down = downArea.Contains(Input.mousePosition) && transform.position.y >= 0;
-        bool left = leftArea.Contains(Input.mousePosition) && transform.position.x >= 0;
-        bool right = rightArea.Contains(Input.mousePosition) && transform.position.x <= border.x;
+        bool up = upArea.Contains(mouse.position.ReadValue()) && transform.position.y <= border.y;
+        bool down = downArea.Contains(mouse.position.ReadValue()) && transform.position.y >= 0;
+        bool left = leftArea.Contains(mouse.position.ReadValue()) && transform.position.x >= 0;
+        bool right = rightArea.Contains(mouse.position.ReadValue()) && transform.position.x <= border.x;
 
         // 更新移动的缓动系数
         if (right) {
@@ -90,9 +94,9 @@ public class CameraController : MonoBehaviour
 
         #region 摄像机缩放
         // 更新缩放的缓动系数
-        if (Input.GetAxis("Mouse ScrollWheel") < 0 && targetSize <= MaxZoomDistance) {
+        if (mouse.scroll.ReadValue().y < 0 && targetSize <= MaxZoomDistance) {
             targetSize += ZoomSpeed * Time.deltaTime;
-        } else if (Input.GetAxis("Mouse ScrollWheel") > 0 && targetSize >= MinZoomDistance) {
+        } else if (mouse.scroll.ReadValue().y > 0 && targetSize >= MinZoomDistance) {
             targetSize -= ZoomSpeed * Time.deltaTime;
         }
 

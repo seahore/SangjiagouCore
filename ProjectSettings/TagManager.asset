@@ -6,6 +6,7 @@ TagManager:
   tags:
   - UpperUIMask
   - Tilemap
+  - UIHandler
   layers:
   - Default
   - TransparentFX
