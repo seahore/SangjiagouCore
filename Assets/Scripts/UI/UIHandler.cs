@@ -79,4 +79,14 @@ public class UIHandler : MonoBehaviour
         Debug.Log(str);
     }
 
+    public void OnSelectTile(Town town)
+    {
+        var t = GameObject.Find("Town Info Panel").GetComponent<TownInfoPanel>();
+        if (town is null) {
+            t.Drawback();
+        } else {
+            t.Set(town);
+            t.Show();
+        }
+    }
 }

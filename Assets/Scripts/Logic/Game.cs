@@ -19,6 +19,7 @@ namespace SangjiagouCore {
 
         static Entities _currentEntities;
         public static Entities CurrentEntities { get => _currentEntities; }
+        public static bool Playing => !(_currentEntities is null);
 
         /// <summary>
         /// 读取存档或开场
@@ -28,6 +29,8 @@ namespace SangjiagouCore {
         /// <param name="isScenario">是否是开场文件</param>
         public static void LoadGame(string fileName, bool encrypted = true, bool isScenario = false)
         {
+            _currentEntities = new Entities();
+
             string path;
             if (isScenario) {
                 if (!Directory.Exists(ScenariosPath))
@@ -69,6 +72,8 @@ namespace SangjiagouCore {
         /// <param name="encrypt">是否加密并用Base64编码转换</param>
         public static void SaveGame(string fileName, bool encrypt = true)
         {
+            if (!Playing) return;
+
             if (!Directory.Exists(SavesPath))
                 Directory.CreateDirectory(SavesPath);
             string saveFilePath = SavesPath + Path.DirectorySeparatorChar + fileName;
@@ -98,6 +103,7 @@ namespace SangjiagouCore {
 
         static void TestInit()
         {
+            _currentEntities = new Entities();
             Monarch.Package mp1 = new Monarch.Package();
             mp1.Name = "鲁庄公";
             mp1.Aggressiveness = -50;
@@ -196,9 +202,15 @@ namespace SangjiagouCore {
 
         static Game()
         {
-            _currentEntities = new Entities();
+            _currentEntities = null;
+
+
+            #region Debug时使用的预设值
 
             TestInit();
+            GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
+
+            #endregion
         }
     }
 }

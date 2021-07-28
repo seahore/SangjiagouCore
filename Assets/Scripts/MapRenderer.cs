@@ -12,12 +12,20 @@ public class MapRenderer : MonoBehaviour
     public Tilemap Tilemap;
     public TileBase TownTile;
     public int PixelsPerUnit = 100;
-    public GameObject ColorMaskPrefab;
+    public GameObject ColorOverlayPrefab;
+    public GameObject SelectOverlayPrefab;
+
+    GameObject selectOverlay;
+
+    const float COLOR_OVERLAY_Z_DIST = 2;
+    const float SELECT_OVERLAY_Z_DIST = 4;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        selectOverlay = Instantiate(SelectOverlayPrefab);
+        selectOverlay.transform.SetParent(transform);
+        selectOverlay.SetActive(false);
     }
 
     // Update is called once per frame
@@ -29,11 +37,22 @@ public class MapRenderer : MonoBehaviour
     void Paint(Vector2Int pos, Color color)
     {
         color.a = 0.5f;
-        GameObject o = Instantiate(ColorMaskPrefab);
+        GameObject o = Instantiate(ColorOverlayPrefab);
         o.transform.SetParent(transform);
-        o.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, transform.position.z - 10), Quaternion.identity);
+        o.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, transform.position.z - COLOR_OVERLAY_Z_DIST), Quaternion.identity);
         o.GetComponent<SpriteRenderer>().material = new Material(Shader.Find("Sprites/Default"));
         o.GetComponent<SpriteRenderer>().material.SetColor("_Color", color);
+    }
+
+    public void SelectTile(Vector2Int pos)
+    {
+        selectOverlay.SetActive(true);
+        selectOverlay.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, transform.position.z - SELECT_OVERLAY_Z_DIST), Quaternion.identity);
+    }
+
+    public void DeselectTile()
+    {
+        selectOverlay.SetActive(false);
     }
 
     public void RefreshMap()
