@@ -10,6 +10,7 @@ public class SavedGamesPanel : MonoBehaviour
 {
     public GameObject MaskPrefab;
     public GameObject SavedGameSelection;
+    public GameObject SelectSchoolPanelPrefab;
 
     FileInfo[] _savedGames;
 
@@ -85,6 +86,9 @@ public class SavedGamesPanel : MonoBehaviour
             GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
         }
         GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
+
         OnCloseButtonClick();
+
+        Instantiate(SelectSchoolPanelPrefab, GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>().UpperUICanvas.transform);
     }
 }

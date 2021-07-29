@@ -10,6 +10,7 @@ namespace SangjiagouCore {
     {
         public class Package
         {
+            public int PlayerID;
             public string Name;
             public List<Scholar.Package> Members;
             public List<string> AllowedPropositionTypes; // ==> List<Type> _allowedPropositionTypes;
@@ -17,6 +18,7 @@ namespace SangjiagouCore {
         public Package Pack()
         {
             Package pkg = new Package {
+                PlayerID = _playerID,
                 Name = _name,
                 Members = new List<Scholar.Package>(),
                 AllowedPropositionTypes = new List<string>()
@@ -33,6 +35,7 @@ namespace SangjiagouCore {
         public void Unpack(Package pkg)
         {
             _pkg = pkg;
+            _playerID = _pkg.PlayerID;
             _name = _pkg.Name;
             _members = new List<Scholar>();
             _allowedPropositionTypes = new List<Type>();
@@ -59,11 +62,17 @@ namespace SangjiagouCore {
         /// <summary>
         /// 玩家标识符，若为0则是AI
         /// </summary>
-        public int PlayerID => _playerID;
+        public int PlayerID {
+            set {
+                _playerID = value;
+            }
+            get => _playerID;
+        }
+        public const int AIControl = 0;
         /// <summary>
         /// 是否是AI控制，即玩家标识符是否为0
         /// </summary>
-        public bool IsAI => _playerID == 0;
+        public bool IsAI => _playerID == AIControl;
 
         string _name;
         /// <summary>

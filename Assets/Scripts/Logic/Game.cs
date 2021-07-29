@@ -196,6 +196,9 @@ namespace SangjiagouCore {
             foreach (var t in _currentEntities.Towns) {
                 t.Relink();
             }
+            foreach (var t in _currentEntities.Schools) {
+                t.PlayerID = t.Name == "儒家" ? 1 : 0;
+            }
         }
 
 

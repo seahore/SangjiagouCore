@@ -7,7 +7,7 @@ using SangjiagouCore;
 public class UIHandler : MonoBehaviour
 {
     public GameObject UpperUICanvas;
-    public GameObject SavedGamesPanelrefab;
+    public GameObject SavedGamesPanelPrefab;
     public GameObject SettingsPanelPrefab;
     public GameObject WarningBoxPrefab;
 
@@ -47,7 +47,7 @@ public class UIHandler : MonoBehaviour
     }
     public void OnSavedGamesButtonClick()
     {
-        Instantiate(SavedGamesPanelrefab, UpperUICanvas.transform);
+        Instantiate(SavedGamesPanelPrefab, UpperUICanvas.transform);
     }
 
     public void OnSettingsButtonClick()

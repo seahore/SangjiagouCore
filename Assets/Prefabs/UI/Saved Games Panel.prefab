@@ -797,6 +797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaskPrefab: {fileID: 7664512199129147264, guid: 8bfc4d3776abeed40926fdec2b41b7db, type: 3}
   SavedGameSelection: {fileID: 2845228980968305770, guid: 55ad1d5a7af114042ba8be6f0592088c, type: 3}
+  SelectSchoolPanelPrefab: {fileID: 5045372835625204425, guid: 8beb9f8204fb40c4f9ead3180ac3752c, type: 3}
 --- !u!1 &7889202765302236037
 GameObject:
   m_ObjectHideFlags: 0
