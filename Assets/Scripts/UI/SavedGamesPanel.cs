@@ -87,8 +87,7 @@ public class SavedGamesPanel : MonoBehaviour
         }
         GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
 
-        OnCloseButtonClick();
-
         Instantiate(SelectSchoolPanelPrefab, GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>().UpperUICanvas.transform);
+        GetComponent<Animator>().SetTrigger("Close");   // 后面还有一个选择学派的面板要显示，所以不解除模糊
     }
 }

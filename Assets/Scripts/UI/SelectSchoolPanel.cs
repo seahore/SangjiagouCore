@@ -21,7 +21,9 @@ public class SelectSchoolPanel : MonoBehaviour
         transform.SetParent(mask.transform);
 
         var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-        mainCam.GetComponent<Animator>().SetTrigger("Unfocus");
+        if (mainCam.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Focused")) {
+            mainCam.GetComponent<Animator>().SetTrigger("Unfocus");
+        }
 
         var l = transform.Find("Scroll View/Viewport/Schools List");
         var unitHeight = SchoolSelection.GetComponent<RectTransform>().rect.height;
@@ -37,6 +39,7 @@ public class SelectSchoolPanel : MonoBehaviour
             });
             o.GetComponent<RectTransform>().offsetMin = new Vector2(8, t - unitHeight);
             o.GetComponent<RectTransform>().offsetMax = new Vector2(-8, t);
+            o.transform.Find("Avatar").GetComponent<Image>().sprite = i.Leader.Avatar;
             o.transform.Find("School Name").GetComponent<Text>().text = i.Name;
             o.transform.Find("Leader Name").GetComponent<Text>().text = i.Leader.FullCourtesyName;
             t -= unitHeight + 4;
@@ -63,6 +66,11 @@ public class SelectSchoolPanel : MonoBehaviour
             i.PlayerID = School.AIControl;
         }
         selecting.PlayerID = this.PlayerID;
+
+        var o = GameObject.Find("Player Panel").transform;
+        o.Find("Avatar").GetComponent<Image>().sprite = selecting.Leader.Avatar;
+        o.Find("Scholar Name").GetComponent<Text>().text = selecting.Leader.FullCourtesyName;
+        o.Find("School Name").GetComponent<Text>().text = selecting.Name;
 
         // 关闭该面板
         if (GameObject.Find("Upper UI Canvas").transform.childCount <= 1) {

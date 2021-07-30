@@ -19,8 +19,14 @@ public class CameraController : MonoBehaviour
 
     Rect upArea;
     Rect downArea;
-    Rect leftArea;
     Rect rightArea;
+    Rect leftArea;
+    bool up;
+    bool down;
+    bool left;
+    bool right;
+    float zoom;
+
     Vector3 velocity;
     Vector3 border;
     float targetSize;
@@ -29,40 +35,28 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        upArea = transform.position.y + (0.5 * GetComponent<Camera>().pixelHeight / PixelsPerUnit) <= Game.CurrentEntities.MapSize.y
-            ? new Rect(0, Screen.height - ScrollTriggerEdgeWidth, Screen.width, ScrollTriggerEdgeWidth)
-            : Rect.zero;
-        downArea = (transform.position.y * PixelsPerUnit) - (0.5 * GetComponent<Camera>().pixelHeight) >= 0
-            ? new Rect(0, 0, Screen.width, ScrollTriggerEdgeWidth)
-            : Rect.zero;
-        rightArea = transform.position.x + (0.5 * GetComponent<Camera>().pixelHeight / PixelsPerUnit) <= Game.CurrentEntities.MapSize.x
-            ? new Rect(Screen.width - ScrollTriggerEdgeWidth, 1f, ScrollTriggerEdgeWidth, Screen.height)
-            : Rect.zero;
-        leftArea = transform.position.x - (0.5 * GetComponent<Camera>().pixelHeight / PixelsPerUnit) >= 0
-            ? new Rect(0, 0, ScrollTriggerEdgeWidth, Screen.height)
-            : Rect.zero;
-
         scrollEasingFactor = Vector2.zero;
         targetSize = CAMERA_STANDARD_SIZE;
     }
 
     void Update()
     {
-        var mouse = Mouse.current;
-        if (mouse is null) return;
-
-        #region 摄像机移动
-
         border = new Vector3 {
             x = Game.CurrentEntities.MapSize.x,
             y = Game.CurrentEntities.MapSize.y,
             z = 0
         };
+
+        upArea = new Rect(0, Screen.height - ScrollTriggerEdgeWidth, Screen.width, ScrollTriggerEdgeWidth);
+        downArea = new Rect(0, 0, Screen.width, ScrollTriggerEdgeWidth);
+        rightArea = new Rect(Screen.width - ScrollTriggerEdgeWidth, 1f, ScrollTriggerEdgeWidth, Screen.height);
+        leftArea = new Rect(0, 0, ScrollTriggerEdgeWidth, Screen.height);
+
         // 如果摄像机位置出某一边的边界，那么那个方向的运动被禁止
-        bool up = upArea.Contains(mouse.position.ReadValue()) && transform.position.y <= border.y;
-        bool down = downArea.Contains(mouse.position.ReadValue()) && transform.position.y >= 0;
-        bool left = leftArea.Contains(mouse.position.ReadValue()) && transform.position.x >= 0;
-        bool right = rightArea.Contains(mouse.position.ReadValue()) && transform.position.x <= border.x;
+        up = up && transform.position.y <= border.y;
+        down = down && transform.position.y >= 0;
+        left = left && transform.position.x >= 0;
+        right = right && transform.position.x <= border.x;
 
         // 更新移动的缓动系数
         if (right) {
@@ -88,19 +82,35 @@ public class CameraController : MonoBehaviour
 
         // 因为摄像机的缩放是缩小视口，所以当缩放较近时移动速度可能会太快，故乘一个相机当前size和标准size的比例
         velocity *= Time.deltaTime * (GetComponent<Camera>().orthographicSize / CAMERA_STANDARD_SIZE);
-
         transform.Translate(velocity);
-        #endregion
 
-        #region 摄像机缩放
         // 更新缩放的缓动系数
-        if (mouse.scroll.ReadValue().y < 0 && targetSize <= MaxZoomDistance) {
+        if (zoom < 0 && targetSize <= MaxZoomDistance) {
             targetSize += ZoomSpeed * Time.deltaTime;
-        } else if (mouse.scroll.ReadValue().y > 0 && targetSize >= MinZoomDistance) {
+        } else if (zoom > 0 && targetSize >= MinZoomDistance) {
             targetSize -= ZoomSpeed * Time.deltaTime;
         }
-
         GetComponent<Camera>().orthographicSize = Mathf.Lerp(GetComponent<Camera>().orthographicSize, targetSize, Time.deltaTime / ZoomEasingTime);
-        #endregion
+    }
+
+    /// <summary>
+    /// 摄像机检查鼠标位置并向四个方向中的某几个滚动，包含缓动效果和边界检查
+    /// </summary>
+    /// <param name="mPos">鼠标位置</param>
+    public void Scroll(Vector2 mPos)
+    {
+        up = upArea.Contains(mPos);
+        down = downArea.Contains(mPos);
+        left = leftArea.Contains(mPos);
+        right = rightArea.Contains(mPos);
+    }
+
+    /// <summary>
+    /// 摄像机缩放，包含缓动效果和边界检查
+    /// </summary>
+    /// <param name="y">瞬时缩放的值</param>
+    public void Zoom(float y)
+    {
+        this.zoom = y;
     }
 }

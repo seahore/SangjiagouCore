@@ -14,21 +14,21 @@ public class MapRenderer : MonoBehaviour
     public int PixelsPerUnit = 100;
     public GameObject ColorOverlayPrefab;
     public GameObject SelectOverlayPrefab;
+    public GameObject BorderLinePrefab;
 
     GameObject selectOverlay;
 
     const float COLOR_OVERLAY_Z_DIST = 2;
     const float SELECT_OVERLAY_Z_DIST = 4;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         selectOverlay = Instantiate(SelectOverlayPrefab);
-        selectOverlay.transform.SetParent(transform);
+        selectOverlay.transform.SetParent(Tilemap.transform);
         selectOverlay.SetActive(false);
+        new GameObject("Refresh").transform.SetParent(Tilemap.transform);
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -38,8 +38,9 @@ public class MapRenderer : MonoBehaviour
     {
         color.a = 0.5f;
         GameObject o = Instantiate(ColorOverlayPrefab);
-        o.transform.SetParent(transform);
-        o.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, transform.position.z - COLOR_OVERLAY_Z_DIST), Quaternion.identity);
+        var refresh = Tilemap.transform.Find("Refresh").transform;
+        o.transform.SetParent(refresh);
+        o.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, Tilemap.transform.position.z - COLOR_OVERLAY_Z_DIST), Quaternion.identity);
         o.GetComponent<SpriteRenderer>().material = new Material(Shader.Find("Sprites/Default"));
         o.GetComponent<SpriteRenderer>().material.SetColor("_Color", color);
     }
@@ -47,7 +48,7 @@ public class MapRenderer : MonoBehaviour
     public void SelectTile(Vector2Int pos)
     {
         selectOverlay.SetActive(true);
-        selectOverlay.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, transform.position.z - SELECT_OVERLAY_Z_DIST), Quaternion.identity);
+        selectOverlay.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, Tilemap.transform.position.z - SELECT_OVERLAY_Z_DIST), Quaternion.identity);
     }
 
     public void DeselectTile()
@@ -57,21 +58,39 @@ public class MapRenderer : MonoBehaviour
 
     public void RefreshMap()
     {
-        GameObject tb = new GameObject("Top Border", typeof(LineRenderer));
-        GameObject bb = new GameObject("Bottom Border", typeof(LineRenderer));
-        GameObject lb = new GameObject("Left Border", typeof(LineRenderer));
-        GameObject rb = new GameObject("Right Border", typeof(LineRenderer));
+        var refresh = Tilemap.transform.Find("Refresh").transform;
+        for (int i = 0; i < refresh.childCount; ++i) {
+            Destroy(refresh.GetChild(i).gameObject);
+        }
 
-        tb.transform.SetParent(Tilemap.transform);
-        bb.transform.SetParent(Tilemap.transform);
-        lb.transform.SetParent(Tilemap.transform);
-        rb.transform.SetParent(Tilemap.transform);
+        GameObject tb = Instantiate(BorderLinePrefab, refresh);
+        GameObject bb = Instantiate(BorderLinePrefab, refresh);
+        GameObject lb = Instantiate(BorderLinePrefab, refresh);
+        GameObject rb = Instantiate(BorderLinePrefab, refresh);
 
-        tb.GetComponent<LineRenderer>().SetPositions(new Vector3[] { new Vector3(0, Game.CurrentEntities.MapSize.y, 0), new Vector3(Game.CurrentEntities.MapSize.x, Game.CurrentEntities.MapSize.y, 0) });
-        bb.GetComponent<LineRenderer>().SetPositions(new Vector3[] { Vector3.zero, new Vector3(Game.CurrentEntities.MapSize.x, 0, 0) });
-        lb.GetComponent<LineRenderer>().SetPositions(new Vector3[] { new Vector3(0, Game.CurrentEntities.MapSize.y, 0), Vector3.zero });
-        rb.GetComponent<LineRenderer>().SetPositions(new Vector3[] { new Vector3(Game.CurrentEntities.MapSize.x, Game.CurrentEntities.MapSize.y, 0), new Vector3(Game.CurrentEntities.MapSize.x, 0, 0) });
-        
+        tb.name = "Top Border";
+        bb.name = "Bottom Border";
+        lb.name = "Left Border";
+        rb.name = "Right Border";
+
+        float width = tb.GetComponent<LineRenderer>().startWidth;
+        float z = Tilemap.transform.position.z;
+        tb.GetComponent<LineRenderer>().SetPositions(new Vector3[] {
+            new Vector3(-width, Game.CurrentEntities.MapSize.y + 0.5f * width, z),
+            new Vector3(Game.CurrentEntities.MapSize.x + width, Game.CurrentEntities.MapSize.y + 0.5f * width, z)
+        });
+        bb.GetComponent<LineRenderer>().SetPositions(new Vector3[] { 
+            new Vector3(-width, -0.5f * width, z),
+            new Vector3(Game.CurrentEntities.MapSize.x + width, -0.5f * width, z)
+        });
+        lb.GetComponent<LineRenderer>().SetPositions(new Vector3[] {
+            new Vector3(-0.5f * width, Game.CurrentEntities.MapSize.y + width, z),
+            new Vector3(-0.5f * width, -width, z)
+        });
+        rb.GetComponent<LineRenderer>().SetPositions(new Vector3[] {
+            new Vector3(Game.CurrentEntities.MapSize.x + 0.5f * width, Game.CurrentEntities.MapSize.y + width, z),
+            new Vector3(Game.CurrentEntities.MapSize.x + 0.5f * width, -width, z)
+        });
 
         foreach (var t in Game.CurrentEntities.Towns) {
             Tilemap.SetTile(new Vector3Int(t.Position.x, t.Position.y, 0), TownTile);

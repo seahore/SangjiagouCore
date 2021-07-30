@@ -16,6 +16,7 @@ namespace SangjiagouCore {
 
         public readonly static string ScenariosPath = Application.dataPath + Path.DirectorySeparatorChar + "Scenarios";
         public readonly static string SavesPath = Application.dataPath + Path.DirectorySeparatorChar + "Saves";
+        public readonly static string AvatarsPath = Application.dataPath + Path.DirectorySeparatorChar + "Avatars";
 
         static Entities _currentEntities;
         public static Entities CurrentEntities { get => _currentEntities; }
@@ -100,6 +101,32 @@ namespace SangjiagouCore {
             bw.Close();
         }
 
+        /// <summary>
+        /// 读取肖像图片
+        /// </summary>
+        /// <param name="filename">图片文件名</param>
+        /// <returns></returns>
+        public static Sprite LoadAvatar(string filename)
+        {
+            if (!Directory.Exists(AvatarsPath))
+                Directory.CreateDirectory(AvatarsPath);
+
+            string path = AvatarsPath + Path.DirectorySeparatorChar + filename;
+            if (File.Exists(path)) {
+                var ts = filename.Trim().Split('.');
+                switch (ts[ts.Length - 1].ToLower()) {
+                    case "jpg":
+                    case "png":
+                        var t2d = new Texture2D(100, 100);
+                        t2d.LoadImage(File.ReadAllBytes(path));
+                        return Sprite.Create(t2d, new Rect(0, 0, t2d.width, t2d.height), new Vector2(0, 0));
+                }
+                throw new BadImageFormatException();
+            } else {
+                throw new FileNotFoundException("找不到指定的肖像文件：" + path);
+            }
+        }
+
 
         static void TestInit()
         {
@@ -168,18 +195,18 @@ namespace SangjiagouCore {
             School rujia = new School("儒家", new List<Scholar>(), new List<Type> { typeof(DeclareWarAction) });
             School mojia = new School("墨家", new List<Scholar>(), new List<Type>());
             List<Scholar> lsQufu = new List<Scholar> {
-                new Scholar("孟", "轲", "子舆", 40, 80, null, tl[0])
+                new Scholar("孟", "轲", "子舆", 40, 80, null, tl[0], "TogashiYuta.jpg")
             };
             tl[0].Recruits[rujia] = lsQufu;
             List<Scholar> scl1 = new List<Scholar> {
-                new Scholar("孔", "丘", "仲尼", 70, 50, rujia, tl[0]),
-                new Scholar("颜", "回", "子渊", 40, 50, rujia, tl[0]),
-                new Scholar("闵", "损", "子骞", 55, 50, rujia, tl[1]),
-                new Scholar("冉", "耕", "伯牛", 63, 50, rujia, tl[2])
+                new Scholar("孔", "丘", "仲尼", 70, 50, rujia, tl[0], "NibutaniShinka.jpg"),
+                new Scholar("颜", "回", "子渊", 40, 50, rujia, tl[0], "TogashiYuta.jpg"),
+                new Scholar("闵", "损", "子骞", 55, 50, rujia, tl[1], "TogashiYuta.jpg"),
+                new Scholar("冉", "耕", "伯牛", 63, 50, rujia, tl[2], "TogashiYuta.jpg")
             };
             List<Scholar> scl2 = new List<Scholar> {
-                new Scholar("墨", "翟", "翟", 30, 100, mojia, tl[2]),
-                new Scholar("禽", "滑釐", "慎子", 20, 60, mojia, tl[3]),
+                new Scholar("墨", "翟", "翟", 30, 100, mojia, tl[2], "TakanashiRikka.jpg"),
+                new Scholar("禽", "滑釐", "慎子", 20, 60, mojia, tl[3], "DekomoriSanae.jpg"),
             };
             rujia.Members.AddRange(scl1);
             mojia.Members.AddRange(scl2);
@@ -211,7 +238,6 @@ namespace SangjiagouCore {
             #region Debug时使用的预设值
 
             TestInit();
-            GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
 
             #endregion
         }

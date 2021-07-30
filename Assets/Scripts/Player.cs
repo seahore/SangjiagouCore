@@ -21,10 +21,14 @@ public class Player : MonoBehaviour
     School playerSchool;
 
     Vector2 mousePosition;
+    Vector2 mouseScroll;
 
     void OnEnable()
     {
         Input.Point += UpdateMousePosition;
+        Input.Point += CameraScroll;
+        Input.Zoom += UpdateMouseScroll;
+        Input.Zoom += CameraZoom;
         Input.Select += SelectMap;
         Input.NextTurn += NextTurn;
         Input.ShowMenu += ShowMenu;
@@ -33,6 +37,9 @@ public class Player : MonoBehaviour
     void OnDisable()
     {
         Input.Point -= UpdateMousePosition;
+        Input.Point -= CameraScroll;
+        Input.Zoom -= UpdateMouseScroll;
+        Input.Zoom -= CameraZoom;
         Input.Select -= SelectMap;
         Input.NextTurn -= NextTurn;
         Input.ShowMenu -= ShowMenu;
@@ -45,18 +52,32 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        
+        GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
     }
 
     void Update()
     {
-        
+
     }
 
     void UpdateMousePosition(Vector2 v)
     {
-        Debug.Log(v);
         mousePosition = v;
+    }
+
+    void CameraScroll(Vector2 mousePosition)
+    {
+        MainCamera.GetComponent<CameraController>().Scroll(mousePosition);
+    }
+
+    void UpdateMouseScroll(Vector2 v)
+    {
+        mouseScroll = v;
+    }
+
+    void CameraZoom(Vector2 scroll)
+    {
+        MainCamera.GetComponent<CameraController>().Zoom(scroll.y);
     }
 
     void SelectMap()
@@ -86,7 +107,7 @@ public class Player : MonoBehaviour
 
     void NextTurn()
     {
-        Debug.Log("NextTurn!");
+
     }
 
     void ShowMenu()

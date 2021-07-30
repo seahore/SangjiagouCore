@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerInput : ScriptableObject, DefaultInputActions.IGameplayActions
 {
     public event UnityAction<Vector2> Point = delegate { };
+    public event UnityAction<Vector2> Zoom = delegate { };
     public event UnityAction Select = delegate { };
     public event UnityAction NextTurn = delegate { };
     public event UnityAction ShowMenu = delegate { };
@@ -26,8 +27,15 @@ public class PlayerInput : ScriptableObject, DefaultInputActions.IGameplayAction
 
     public void OnPoint(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed) {
+        //if (context.phase == InputActionPhase.Performed) {
             Point(context.ReadValue<Vector2>());
+        //}
+    }
+
+    public void OnZoom(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed || context.phase == InputActionPhase.Canceled) {
+            Zoom(context.ReadValue<Vector2>());
         }
     }
 

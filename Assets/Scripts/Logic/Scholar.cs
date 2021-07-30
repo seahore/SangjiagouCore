@@ -12,6 +12,7 @@ namespace SangjiagouCore {
     {
         public class Package
         {
+            public string AvatarFilename;
             public string FamilyName;
             public string GivenName;
             public string CourtesyName;
@@ -24,6 +25,7 @@ namespace SangjiagouCore {
         public Package Pack()
         {
             Package pkg = new Package {
+                AvatarFilename = _avatarFilename,
                 FamilyName = _familyName,
                 GivenName = _givenName,
                 CourtesyName = _courtesyName,
@@ -39,6 +41,8 @@ namespace SangjiagouCore {
         public void Unpack(Package pkg)
         {
             _pkg = pkg;
+            _avatarFilename = _pkg.AvatarFilename;
+            _avatar = Game.LoadAvatar(_pkg.AvatarFilename);
             _familyName = _pkg.FamilyName;
             _givenName = _pkg.GivenName;
             _courtesyName = _pkg.CourtesyName;
@@ -71,6 +75,13 @@ namespace SangjiagouCore {
             }
             _pkg = null;
         }
+
+        string _avatarFilename;
+        Sprite _avatar;
+        /// <summary>
+        /// 诸子肖像（正方形）。
+        /// </summary>
+        public Sprite Avatar => _avatar;
 
         string _familyName;
         string _givenName;
@@ -166,8 +177,10 @@ namespace SangjiagouCore {
             Unpack(pkg);
             _belongTo = belongTo;
         }
-        public Scholar(string familyName, string givenName, string courtesyName, int age, int sophistry, School belongTo, Town location)
+        public Scholar(string familyName, string givenName, string courtesyName, int age, int sophistry, School belongTo, Town location, string avatarFilename)
         {
+            _avatarFilename = avatarFilename;
+            _avatar = Game.LoadAvatar(avatarFilename);
             _familyName = familyName;
             _givenName = givenName;
             _courtesyName = courtesyName;

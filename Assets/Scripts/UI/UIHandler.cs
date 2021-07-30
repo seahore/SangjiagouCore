@@ -9,6 +9,7 @@ public class UIHandler : MonoBehaviour
     public GameObject UpperUICanvas;
     public GameObject SavedGamesPanelPrefab;
     public GameObject SettingsPanelPrefab;
+    public GameObject SelectSchoolPanelPrefab;
     public GameObject WarningBoxPrefab;
 
     // Start is called before the first frame update
@@ -33,6 +34,11 @@ public class UIHandler : MonoBehaviour
     {
         var anim = GameObject.Find("Menu Panel").GetComponent<Animator>();
         anim.SetBool("Open", !anim.GetBool("Open"));
+    }
+
+    public void OnSwitchSchoolButtonClick()
+    {
+        Instantiate(SelectSchoolPanelPrefab, UpperUICanvas.transform);
     }
 
     public void OnQuickSaveButtonClick()

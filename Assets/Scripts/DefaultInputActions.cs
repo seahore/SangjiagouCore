@@ -27,6 +27,14 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""944de0ea-f2e8-4f66-a63b-b4c3506283a8"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Select"",
                     ""type"": ""Button"",
                     ""id"": ""6c2ab1b8-8984-453a-af3d-a3c78ae1679a"",
@@ -159,6 +167,17 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ShowMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fde2faee-580c-4c08-8732-aead31e3ecba"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -737,6 +756,7 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Point = m_Gameplay.FindAction("Point", throwIfNotFound: true);
+        m_Gameplay_Zoom = m_Gameplay.FindAction("Zoom", throwIfNotFound: true);
         m_Gameplay_Select = m_Gameplay.FindAction("Select", throwIfNotFound: true);
         m_Gameplay_NextTurn = m_Gameplay.FindAction("NextTurn", throwIfNotFound: true);
         m_Gameplay_ShowMenu = m_Gameplay.FindAction("ShowMenu", throwIfNotFound: true);
@@ -802,6 +822,7 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Gameplay;
     private IGameplayActions m_GameplayActionsCallbackInterface;
     private readonly InputAction m_Gameplay_Point;
+    private readonly InputAction m_Gameplay_Zoom;
     private readonly InputAction m_Gameplay_Select;
     private readonly InputAction m_Gameplay_NextTurn;
     private readonly InputAction m_Gameplay_ShowMenu;
@@ -810,6 +831,7 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
         private @DefaultInputActions m_Wrapper;
         public GameplayActions(@DefaultInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Point => m_Wrapper.m_Gameplay_Point;
+        public InputAction @Zoom => m_Wrapper.m_Gameplay_Zoom;
         public InputAction @Select => m_Wrapper.m_Gameplay_Select;
         public InputAction @NextTurn => m_Wrapper.m_Gameplay_NextTurn;
         public InputAction @ShowMenu => m_Wrapper.m_Gameplay_ShowMenu;
@@ -825,6 +847,9 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                 @Point.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPoint;
                 @Point.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPoint;
                 @Point.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPoint;
+                @Zoom.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
+                @Zoom.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
+                @Zoom.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
                 @Select.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
                 @Select.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
                 @Select.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
@@ -841,6 +866,9 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                 @Point.started += instance.OnPoint;
                 @Point.performed += instance.OnPoint;
                 @Point.canceled += instance.OnPoint;
+                @Zoom.started += instance.OnZoom;
+                @Zoom.performed += instance.OnZoom;
+                @Zoom.canceled += instance.OnZoom;
                 @Select.started += instance.OnSelect;
                 @Select.performed += instance.OnSelect;
                 @Select.canceled += instance.OnSelect;
@@ -1007,6 +1035,7 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
     public interface IGameplayActions
     {
         void OnPoint(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
         void OnSelect(InputAction.CallbackContext context);
         void OnNextTurn(InputAction.CallbackContext context);
         void OnShowMenu(InputAction.CallbackContext context);
