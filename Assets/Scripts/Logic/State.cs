@@ -90,6 +90,7 @@ namespace SangjiagouCore
             _satisfaction = _pkg.Satisfaction;
             _ceremony = _pkg.Ceremony;
             _food = _pkg.Food;
+            _actionQueue = new List<StateAction>();
         }
         public void Relink()
         {

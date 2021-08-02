@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     {
         Input.Point += UpdateMousePosition;
         Input.Point += CameraScroll;
+        Input.Point += CheckTooltipAndShow;
         Input.Zoom += UpdateMouseScroll;
         Input.Zoom += CameraZoom;
         Input.Select += SelectMap;
@@ -38,6 +39,7 @@ public class Player : MonoBehaviour
     {
         Input.Point -= UpdateMousePosition;
         Input.Point -= CameraScroll;
+        Input.Point -= CheckTooltipAndShow;
         Input.Zoom -= UpdateMouseScroll;
         Input.Zoom -= CameraZoom;
         Input.Select -= SelectMap;
@@ -60,14 +62,28 @@ public class Player : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 使用侥幸方法做UI射线检测（反编译可知GraphicRaycaster只用这个来做射线检测）
+    /// </summary>
+    List<RaycastResult> GraphicRaycast(Vector2 mousePos)
+    {
+        var ped = new ExtendedPointerEventData(EventSystem.current);
+        var results = new List<RaycastResult>();
+        ped.position = mousePos;
+        foreach (var gr in GraphicRaycaster) {
+            gr.Raycast(ped, results);
+        }
+        return results;
+    }
+
     void UpdateMousePosition(Vector2 v)
     {
         mousePosition = v;
     }
 
-    void CameraScroll(Vector2 mousePosition)
+    void CameraScroll(Vector2 mousePos)
     {
-        MainCamera.GetComponent<CameraController>().Scroll(mousePosition);
+        MainCamera.GetComponent<CameraController>().Scroll(mousePos);
     }
 
     void UpdateMouseScroll(Vector2 v)
@@ -82,13 +98,7 @@ public class Player : MonoBehaviour
 
     void SelectMap()
     {
-        var ped = new ExtendedPointerEventData(EventSystem.current);
-        var results = new List<RaycastResult>();
-        ped.position = mousePosition;   // 侥幸方法（反编译可知GraphicRaycaster只用这个来做射线检测）
-        foreach (var gr in GraphicRaycaster) {
-            gr.Raycast(ped, results);
-        }
-        if (results.Count > 0) return;
+        if (GraphicRaycast(mousePosition).Count > 0) return;
         
         Vector3 t = MainCamera.ScreenToWorldPoint(mousePosition);
         Vector2Int selection = new Vector2Int((int)t.x, (int)t.y);
@@ -103,6 +113,17 @@ public class Player : MonoBehaviour
             }
         }
         UIHandler.OnSelectTile(town);
+    }
+
+    void CheckTooltipAndShow(Vector2 mousePos)
+    {
+        ITooltipDisplayable tip = null;
+        foreach (var i in GraphicRaycast(mousePos)) {
+            if (i.gameObject.TryGetComponent(out tip))
+                break;
+        }
+        if (tip is null) UIHandler.DisplayTooltip(false, "", mousePos);
+        else UIHandler.DisplayTooltip(true, tip.TooltipContent, mousePos);
     }
 
     void NextTurn()

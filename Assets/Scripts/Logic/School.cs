@@ -96,6 +96,19 @@ namespace SangjiagouCore {
         /// </summary>
         public List<Type> AllowedPropositionTypes => _allowedPropositionTypes;
 
+        /// <summary>
+        /// 根据姓名或者姓字查找该学派内的学者
+        /// </summary>
+        /// <param name="name">姓名或者姓字。不能是单独的姓、名或字</param>
+        /// <returns>找到则返回该学者，否则返回null</returns>
+        public Scholar FindScholarByName(string name)
+        {
+            foreach (var s in _members) {
+                if (s.FullName == name || s.FullCourtesyName == name)
+                    return s;
+            }
+            return null;
+        }
 
         public void AIPlan()
         {

@@ -9,7 +9,9 @@ using SangjiagouCore;
 /// </summary>
 public class GlobalInitializer : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public AudioSource BGMSource;
+    public AudioSource SFXSource;
+
     void Awake()
     {
         // 检查目录是否存在
@@ -22,9 +24,16 @@ public class GlobalInitializer : MonoBehaviour
 
         Settings.LoadSettings(Settings.GlobalSettingsFilename);
         Screen.SetResolution(Settings.Values.Resolution.width, Settings.Values.Resolution.height, Settings.Values.FullScreenMode, Settings.Values.Resolution.refreshRate);
+
+        BGMSource.volume = 0.01f * Settings.Values.BGMVolumn * 0.01f * Settings.Values.OverallVolumn;
+        SFXSource.volume = 0.01f * Settings.Values.SFXVolumn * 0.01f * Settings.Values.OverallVolumn;
     }
 
-    // Update is called once per frame
+    void Start()
+    {
+        
+    }
+
     void Update()
     {
         

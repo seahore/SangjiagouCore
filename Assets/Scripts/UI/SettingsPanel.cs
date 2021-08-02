@@ -9,7 +9,10 @@ using UnityEngine.UI;
 /// </summary>
 public class SettingsPanel : MonoBehaviour
 {
-    const char RESOLUTION_SEPARATOR = '×';
+    public const char ResolutionSeperator = '×';
+
+    AudioSource bgmSource;
+    AudioSource sfxSource;
 
     void ResetFullScreenModeDropdown()
     {
@@ -32,7 +35,7 @@ public class SettingsPanel : MonoBehaviour
         List<Resolution> t = new List<Resolution>(Screen.resolutions);
         t.Sort((Resolution x, Resolution y) => x.width < y.width || x.height < x.height ? 1 : -1);
         foreach (Resolution r in t) {
-            string s = r.width.ToString() + RESOLUTION_SEPARATOR + r.height;
+            string s = r.width.ToString() + ResolutionSeperator + r.height;
             if (r.width < 1024 || r.height < 720)
                 s += "（不推荐）";
             sl.Add(s);
@@ -41,11 +44,11 @@ public class SettingsPanel : MonoBehaviour
         transform.Find("Resolution Dropdown").GetComponent<Dropdown>().ClearOptions();
         transform.Find("Resolution Dropdown").GetComponent<Dropdown>().AddOptions(sl);
         int i;
-        for (i = 0; sl[i] != Settings.Values.Resolution.width.ToString() + RESOLUTION_SEPARATOR + Settings.Values.Resolution.height; i++) ;
+        for (i = 0; sl[i] != Settings.Values.Resolution.width.ToString() + ResolutionSeperator + Settings.Values.Resolution.height; i++) ;
         transform.Find("Resolution Dropdown").GetComponent<Dropdown>().SetValueWithoutNotify(i);
     }
 
-    private void ResetRefreshRateDropdown()
+    void ResetRefreshRateDropdown()
     {
         List<string> rrl = new List<string>();
         var t = new List<int>();
@@ -64,15 +67,41 @@ public class SettingsPanel : MonoBehaviour
         for (i = 0; rrl[i] != Settings.Values.Resolution.refreshRate.ToString(); i++) ;
         transform.Find("Refresh Rate Dropdown").GetComponent<Dropdown>().SetValueWithoutNotify(i);
     }
+
+    void ResetMainVolumnSlider()
+    {
+        transform.Find("Main Volumn Slider").GetComponent<Slider>().value = Settings.Values.OverallVolumn;
+        transform.Find("Main Volumn Value Text").GetComponent<Text>().text = Settings.Values.OverallVolumn.ToString();
+    }
+
+    void ResetBGMVolumnSlider()
+    {
+        transform.Find("BGM Volumn Slider").GetComponent<Slider>().value = Settings.Values.BGMVolumn;
+        transform.Find("BGM Volumn Value Text").GetComponent<Text>().text = Settings.Values.BGMVolumn.ToString();
+    }
+
+    void ResetSFXVolumnSlider()
+    {
+        transform.Find("SFX Volumn Slider").GetComponent<Slider>().value = Settings.Values.SFXVolumn;
+        transform.Find("SFX Volumn Value Text").GetComponent<Text>().text = Settings.Values.SFXVolumn.ToString();
+    }
+
+
     void Start()
     {
         var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
         mainCam.GetComponent<Animator>().SetTrigger("Unfocus");
 
+        bgmSource = GameObject.FindGameObjectWithTag("BGMSource").GetComponent<AudioSource>();
+        sfxSource = GameObject.FindGameObjectWithTag("SFXSource").GetComponent<AudioSource>();
 
         ResetFullScreenModeDropdown();
         ResetResolutionDropdown();
         ResetRefreshRateDropdown();
+
+        ResetMainVolumnSlider();
+        ResetBGMVolumnSlider();
+        ResetSFXVolumnSlider();
     }
 
     public void OnCloseButtonClick()
@@ -92,6 +121,11 @@ public class SettingsPanel : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void OnDestroy()
+    {
+        Settings.SaveSettings(Settings.GlobalSettingsFilename);
+    }
+
     public void OnFullScreenModeDropdownChanged()
     {
         switch (transform.Find("Full Screen Mode Dropdown").GetComponent<Dropdown>().value) {
@@ -105,13 +139,12 @@ public class SettingsPanel : MonoBehaviour
                 Settings.Values.FullScreenMode = FullScreenMode.Windowed;
                 break;
         }
-        Settings.SaveSettings(Settings.GlobalSettingsFilename);
         Screen.SetResolution(Settings.Values.Resolution.width, Settings.Values.Resolution.height, Settings.Values.FullScreenMode, Settings.Values.Resolution.refreshRate);
     }
 
     public void OnResolutionDropdownChanged()
     {
-        var sa = transform.Find("Resolution Dropdown").GetComponent<Dropdown>().captionText.text.Split(RESOLUTION_SEPARATOR, '（');
+        var sa = transform.Find("Resolution Dropdown").GetComponent<Dropdown>().captionText.text.Split(ResolutionSeperator, '（');
         (int, int) target = (int.Parse(sa[0]), int.Parse(sa[1]));
         foreach (var r in Screen.resolutions) {
             if(target == (r.width, r.height)) {
@@ -120,7 +153,6 @@ public class SettingsPanel : MonoBehaviour
                 break;
             }
         }
-        Settings.SaveSettings(Settings.GlobalSettingsFilename);
         Screen.SetResolution(Settings.Values.Resolution.width, Settings.Values.Resolution.height, Settings.Values.FullScreenMode, Settings.Values.Resolution.refreshRate);
     }
 
@@ -135,7 +167,31 @@ public class SettingsPanel : MonoBehaviour
                 break;
             }
         }
-        Settings.SaveSettings(Settings.GlobalSettingsFilename);
         Screen.SetResolution(Settings.Values.Resolution.width, Settings.Values.Resolution.height, Settings.Values.FullScreenMode, Settings.Values.Resolution.refreshRate);
+    }
+
+    public void OnMainVolumnSliderChanged()
+    {
+        int value = (int)transform.Find("Main Volumn Slider").GetComponent<Slider>().value;
+        Settings.Values.OverallVolumn = value;
+        transform.Find("Main Volumn Value Text").GetComponent<Text>().text = value.ToString();
+        bgmSource.volume = 0.01f * Settings.Values.BGMVolumn * 0.01f * Settings.Values.OverallVolumn;
+        sfxSource.volume = 0.01f * Settings.Values.SFXVolumn * 0.01f * Settings.Values.OverallVolumn;
+    }
+
+    public void OnBGMVolumnSliderChanged()
+    {
+        int value = (int)transform.Find("BGM Volumn Slider").GetComponent<Slider>().value;
+        Settings.Values.BGMVolumn= value;
+        transform.Find("BGM Volumn Value Text").GetComponent<Text>().text = value.ToString();
+        bgmSource.volume = 0.01f * Settings.Values.BGMVolumn * 0.01f * Settings.Values.OverallVolumn;
+    }
+
+    public void OnSFXVolumnSliderChanged()
+    {
+        int value = (int)transform.Find("SFX Volumn Slider").GetComponent<Slider>().value;
+        Settings.Values.SFXVolumn = value;
+        transform.Find("SFX Volumn Value Text").GetComponent<Text>().text = value.ToString();
+        sfxSource.volume = 0.01f * Settings.Values.SFXVolumn * 0.01f * Settings.Values.OverallVolumn;
     }
 }

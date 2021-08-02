@@ -200,13 +200,14 @@ namespace SangjiagouCore {
             tl[0].Recruits[rujia] = lsQufu;
             List<Scholar> scl1 = new List<Scholar> {
                 new Scholar("孔", "丘", "仲尼", 70, 50, rujia, tl[0], "NibutaniShinka.jpg"),
-                new Scholar("颜", "回", "子渊", 40, 50, rujia, tl[0], "TogashiYuta.jpg"),
-                new Scholar("闵", "损", "子骞", 55, 50, rujia, tl[1], "TogashiYuta.jpg"),
-                new Scholar("冉", "耕", "伯牛", 63, 50, rujia, tl[2], "TogashiYuta.jpg")
+                new Scholar("颜", "回", "子渊", 40, 50, rujia, tl[0], "KannagiKazari.jpg"),
+                new Scholar("闵", "损", "子骞", 55, 50, rujia, tl[1], "TakanashiToka.jpg"),
+                new Scholar("冉", "耕", "伯牛", 63, 50, rujia, tl[2], "TsuyuriKumin.jpg")
             };
             List<Scholar> scl2 = new List<Scholar> {
                 new Scholar("墨", "翟", "翟", 30, 100, mojia, tl[2], "TakanashiRikka.jpg"),
                 new Scholar("禽", "滑釐", "慎子", 20, 60, mojia, tl[3], "DekomoriSanae.jpg"),
+                new Scholar("胡", "非", "非子", 20, 60, mojia, tl[3], "ShichimiyaSatone.jpg"),
             };
             rujia.Members.AddRange(scl1);
             mojia.Members.AddRange(scl2);

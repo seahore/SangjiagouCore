@@ -27,9 +27,9 @@ public class PlayerInput : ScriptableObject, DefaultInputActions.IGameplayAction
 
     public void OnPoint(InputAction.CallbackContext context)
     {
-        //if (context.phase == InputActionPhase.Performed) {
+        if (context.phase == InputActionPhase.Performed) {
             Point(context.ReadValue<Vector2>());
-        //}
+        }
     }
 
     public void OnZoom(InputAction.CallbackContext context)

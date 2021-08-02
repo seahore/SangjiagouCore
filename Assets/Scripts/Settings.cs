@@ -13,10 +13,10 @@ public class Settings
     {
         #region 音频
 
-        float _overallVolumn;
-        public float OverallVolumn {
+        int _overallVolumn;
+        public int OverallVolumn {
             get => _overallVolumn; set {
-                if (value >= 0 && value <= 1) {
+                if (value >= 0 && value <= 100) {
                     _overallVolumn = value;
                 } else {
                     Debug.LogWarning("总音量设置超限");
@@ -24,10 +24,10 @@ public class Settings
             }
         }
 
-        float _bgmVolumn;
-        public float BGMVolumn {
+        int _bgmVolumn;
+        public int BGMVolumn {
             get => _bgmVolumn; set {
-                if (value >= 0 && value <= 1) {
+                if (value >= 0 && value <= 100) {
                     _bgmVolumn = value;
                 } else {
                     Debug.LogWarning("背景音乐音量设置超限");
@@ -35,10 +35,10 @@ public class Settings
             }
         }
 
-        float _sfxVolumn;
-        public float SFXVolumn {
+        int _sfxVolumn;
+        public int SFXVolumn {
             get => _sfxVolumn; set {
-                if (value >= 0 && value <= 1) {
+                if (value >= 0 && value <= 100) {
                     _sfxVolumn = value;
                 } else {
                     Debug.LogWarning("音效音量设置超限");
@@ -61,9 +61,9 @@ public class Settings
     public static ValueTable Values;
 
     readonly static ValueTable DefaultValues = new ValueTable {
-        OverallVolumn = 1,
-        BGMVolumn = 1,
-        SFXVolumn = 1,
+        OverallVolumn = 60,
+        BGMVolumn = 80,
+        SFXVolumn = 100,
         FullScreenMode = FullScreenMode.FullScreenWindow,
         Resolution = Screen.currentResolution
     };

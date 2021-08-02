@@ -188,6 +188,15 @@ namespace SangjiagouCore
             }
         }
 
+        public School GetPlayerSchool(int playerID)
+        {
+            foreach (var s in _schools) {
+                if (s.PlayerID == playerID)
+                    return s;
+            }
+            return null;
+        }
+
         public Entities()
         {
             _totalMonth = 1;

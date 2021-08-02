@@ -6,16 +6,20 @@ using SangjiagouCore;
 
 public class UIHandler : MonoBehaviour
 {
-    public GameObject UpperUICanvas;
+    public Canvas UpperUICanvas;
+    public Canvas TopUICanvas;
     public GameObject SavedGamesPanelPrefab;
     public GameObject SettingsPanelPrefab;
     public GameObject SelectSchoolPanelPrefab;
     public GameObject WarningBoxPrefab;
+    public GameObject TooltipPrefab;
+
+    GameObject tooltip;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        tooltip = Instantiate(TooltipPrefab, TopUICanvas.transform);
     }
 
     // Update is called once per frame
@@ -74,6 +78,14 @@ public class UIHandler : MonoBehaviour
         Debug.Log($"AttackerWon: {report.AttackerWon}\nAttackers: {war.Attackers} Defenders: { war.Defenders}\nAttackerLoss: {report.AttackerLoss} DefenderLoss: {report.DefenderLoss}");
     }
 
+    public void OnActionsButtonClick()
+    {
+        var panel = GameObject.Find("Action Assignment Panel");
+        var anim = panel.GetComponent<Animator>();
+        anim.SetBool("Open", !anim.GetBool("Open"));
+        panel.GetComponent<ActionAssignmentPanel>().Refresh();
+    }
+
     public void OnNextTurnButtonClick()
     {
         Game.CurrentEntities.NextTurn();
@@ -93,6 +105,22 @@ public class UIHandler : MonoBehaviour
         } else {
             t.Set(town);
             t.Show();
+        }
+    }
+
+    public void DisplayTooltip(bool display, string content, Vector2 pos)
+    {
+        tooltip.transform.SetPositionAndRotation(new Vector3(pos.x + 1, pos.y + 1), Quaternion.identity);
+        var anim = tooltip.GetComponent<Animator>();
+        if (display && content.Length > 0) {
+            var cont = tooltip.transform.Find("Content");
+            var rectTrans = tooltip.transform.GetComponent<RectTransform>();
+            cont.GetComponent<Text>().text = content;
+            rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, cont.GetComponent<RectTransform>().rect.width + 10);
+            rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, cont.GetComponent<RectTransform>().rect.height + 5);
+            anim.SetBool("Display", true);
+        } else {
+            anim.SetBool("Display", false);
         }
     }
 }

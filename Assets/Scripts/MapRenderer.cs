@@ -38,7 +38,7 @@ public class MapRenderer : MonoBehaviour
     {
         color.a = 0.5f;
         GameObject o = Instantiate(ColorOverlayPrefab);
-        var refresh = Tilemap.transform.Find("Refresh").transform;
+        var refresh = Tilemap.transform.Find("Refresh");
         o.transform.SetParent(refresh);
         o.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, Tilemap.transform.position.z - COLOR_OVERLAY_Z_DIST), Quaternion.identity);
         o.GetComponent<SpriteRenderer>().material = new Material(Shader.Find("Sprites/Default"));
