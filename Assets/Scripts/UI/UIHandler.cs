@@ -6,6 +6,7 @@ using SangjiagouCore;
 
 public class UIHandler : MonoBehaviour
 {
+    public Canvas UICanvas;
     public Canvas UpperUICanvas;
     public Canvas TopUICanvas;
     public GameObject SavedGamesPanelPrefab;
@@ -81,9 +82,9 @@ public class UIHandler : MonoBehaviour
     public void OnActionsButtonClick()
     {
         var panel = GameObject.Find("Action Assignment Panel");
+        panel.GetComponent<ActionAssignmentPanel>().Refresh();
         var anim = panel.GetComponent<Animator>();
         anim.SetBool("Open", !anim.GetBool("Open"));
-        panel.GetComponent<ActionAssignmentPanel>().Refresh();
     }
 
     public void OnNextTurnButtonClick()
@@ -121,6 +122,16 @@ public class UIHandler : MonoBehaviour
             anim.SetBool("Display", true);
         } else {
             anim.SetBool("Display", false);
+        }
+    }
+
+    public void HideAllUILayerPanels()
+    {
+        Animator anim;
+        for (int i = 0; i < UICanvas.transform.childCount; ++i) {
+            if (UICanvas.transform.GetChild(i).TryGetComponent(out anim)) {
+                anim.SetBool("Open", false);
+            }
         }
     }
 }

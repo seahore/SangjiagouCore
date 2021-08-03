@@ -8,12 +8,10 @@ public class ActionAssignmentPanel : MonoBehaviour
 {
     public GameObject ScholarSelection;
 
-    School playerSchool;
     List<Scholar> selecting;
 
     void Start()
     {
-        playerSchool = Game.CurrentEntities.GetPlayerSchool(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ID);
         Refresh();
     }
 
@@ -24,6 +22,7 @@ public class ActionAssignmentPanel : MonoBehaviour
 
     public void Refresh()
     {
+        School playerSchool = Game.CurrentEntities.GetPlayerSchool(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ID);
         selecting = new List<Scholar>();
         var list = transform.Find("Scroll View/Viewport/Scholars List");
         for (int i = 0; i < list.childCount; ++i) {

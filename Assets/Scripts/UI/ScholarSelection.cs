@@ -7,17 +7,32 @@ using SangjiagouCore;
 [RequireComponent(typeof(CanvasRenderer))]
 public class ScholarSelection : MonoBehaviour, ITooltipDisplayable
 {
-    School playerSchool;
+    Scholar scholar;
 
     void Start()
     {
-        playerSchool = Game.CurrentEntities.GetPlayerSchool(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ID);
+        var playerSchool = Game.CurrentEntities.GetPlayerSchool(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ID);
+        scholar = playerSchool.FindScholarByName(transform.Find("Name").GetComponent<Text>().text);
     }
 
     public string TooltipContent {
         get {
-            var t = playerSchool.FindScholarByName(transform.Find("Name").GetComponent<Text>().text).Action;
-            return t is null ? "目前无任务" : t.ToString();
+            string ret = "";
+
+            ret += "在<b>" + scholar.Location.Controller.Name + "</b>的";
+            if (scholar.Location.IsCapital) {
+                ret += "国都";
+            }
+            ret += "<b>" + scholar.Location.Name;
+            if (scholar.Location.IsCapital) {
+                ret += "★";
+            }
+            ret += "</b>。\n";
+
+            var action = scholar.Action;
+            ret += action is null ? "目前无任务。" : action.ToString();
+
+            return ret;
         }
     }
 

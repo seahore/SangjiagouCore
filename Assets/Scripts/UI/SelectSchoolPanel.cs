@@ -62,6 +62,8 @@ public class SelectSchoolPanel : MonoBehaviour
 
     public void OnOKButtonClick()
     {
+        GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>().HideAllUILayerPanels();
+
         foreach (var i in Game.CurrentEntities.Schools) {
             i.PlayerID = School.AIControl;
         }
