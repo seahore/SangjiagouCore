@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
@@ -65,6 +66,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 使用侥幸方法做UI射线检测（反编译可知GraphicRaycaster只用这个来做射线检测）
     /// </summary>
+    /// <param name="mousePos">检测位置的坐标</param>
     List<RaycastResult> GraphicRaycast(Vector2 mousePos)
     {
         var ped = new ExtendedPointerEventData(EventSystem.current);
@@ -115,6 +117,10 @@ public class Player : MonoBehaviour
         UIHandler.OnSelectTile(town);
     }
 
+    /// <summary>
+    /// 检查鼠标目前停留位置的UI对象能否显示悬浮提示，如能则显示
+    /// </summary>
+    /// <param name="mousePos">鼠标位置坐标</param>
     void CheckTooltipAndShow(Vector2 mousePos)
     {
         ITooltipDisplayable tip = null;
@@ -129,6 +135,20 @@ public class Player : MonoBehaviour
     void NextTurn()
     {
 
+    }
+
+    /// <summary>
+    /// 进入选择城镇模式，此时通过右键单击某城镇选择之，然后通过调用回调函数来将选择的城镇传给申请进入选择模式的来源
+    /// </summary>
+    /// <param name="callback">回调函数</param>
+    public void EnterSelectTownMode(UnityAction<Town> callback)
+    {
+        Town selected = null;
+        UIHandler.HideAllUILayerPanels();
+
+        // 处理选择的代码
+        
+        callback(selected);
     }
 
     void ShowMenu()

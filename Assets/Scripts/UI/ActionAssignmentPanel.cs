@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class ActionAssignmentPanel : MonoBehaviour
     public GameObject ScholarSelection;
 
     List<Scholar> selecting;
+
+    Town selectingTown;
 
     void Start()
     {
@@ -47,6 +50,36 @@ public class ActionAssignmentPanel : MonoBehaviour
                 th -= unitHeight + 5;
             else
                 tw -= unitWidth + 5;
+        }
+    }
+
+    public void SetArgumentsSetters(List<Type> types)
+    {
+        Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        foreach (var type in types) {
+            if(type == typeof(Town)) {
+                player.EnterSelectTownMode((Town t)=>selectingTown = t);
+            }
+        }
+    }
+
+    public void OnActionsDropdownChanged(int index)
+    {
+        switch(index) {
+            case 0:     // 周游
+                // ToDo
+                break;
+            case 1:     // 游说
+                // ToDo
+                break;
+        }
+    }
+
+    public void OnAssignButtonClick()
+    {
+        var dropdown = transform.Find("Actions Dropdown").GetComponent<Dropdown>();
+        if(dropdown.options[dropdown.value].text == "周游") {
+            
         }
     }
 }
