@@ -35,9 +35,17 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Select"",
+                    ""name"": ""LeftSelect"",
                     ""type"": ""Button"",
                     ""id"": ""6c2ab1b8-8984-453a-af3d-a3c78ae1679a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RightSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""416eeac3-fe7b-46bf-ba1f-c1ae8a1a65b3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -62,23 +70,12 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""143bb1cd-cc10-4eca-a2f0-a3664166fe91"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""Select"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""05f6913d-c316-48b2-a6bb-e225f14c7960"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Select"",
+                    ""action"": ""LeftSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -89,18 +86,7 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Touch"",
-                    ""action"": ""Select"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ee3d0cd2-254e-47a7-a8cb-bc94d9658c54"",
-                    ""path"": ""<Joystick>/trigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Joystick"",
-                    ""action"": ""Select"",
+                    ""action"": ""LeftSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -111,7 +97,7 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""XR"",
-                    ""action"": ""Select"",
+                    ""action"": ""LeftSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -178,6 +164,17 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""45469cb4-a8ad-40af-a5da-cee9052354c1"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RightSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -757,7 +754,8 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Point = m_Gameplay.FindAction("Point", throwIfNotFound: true);
         m_Gameplay_Zoom = m_Gameplay.FindAction("Zoom", throwIfNotFound: true);
-        m_Gameplay_Select = m_Gameplay.FindAction("Select", throwIfNotFound: true);
+        m_Gameplay_LeftSelect = m_Gameplay.FindAction("LeftSelect", throwIfNotFound: true);
+        m_Gameplay_RightSelect = m_Gameplay.FindAction("RightSelect", throwIfNotFound: true);
         m_Gameplay_NextTurn = m_Gameplay.FindAction("NextTurn", throwIfNotFound: true);
         m_Gameplay_ShowMenu = m_Gameplay.FindAction("ShowMenu", throwIfNotFound: true);
         // UI
@@ -823,7 +821,8 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
     private IGameplayActions m_GameplayActionsCallbackInterface;
     private readonly InputAction m_Gameplay_Point;
     private readonly InputAction m_Gameplay_Zoom;
-    private readonly InputAction m_Gameplay_Select;
+    private readonly InputAction m_Gameplay_LeftSelect;
+    private readonly InputAction m_Gameplay_RightSelect;
     private readonly InputAction m_Gameplay_NextTurn;
     private readonly InputAction m_Gameplay_ShowMenu;
     public struct GameplayActions
@@ -832,7 +831,8 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
         public GameplayActions(@DefaultInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Point => m_Wrapper.m_Gameplay_Point;
         public InputAction @Zoom => m_Wrapper.m_Gameplay_Zoom;
-        public InputAction @Select => m_Wrapper.m_Gameplay_Select;
+        public InputAction @LeftSelect => m_Wrapper.m_Gameplay_LeftSelect;
+        public InputAction @RightSelect => m_Wrapper.m_Gameplay_RightSelect;
         public InputAction @NextTurn => m_Wrapper.m_Gameplay_NextTurn;
         public InputAction @ShowMenu => m_Wrapper.m_Gameplay_ShowMenu;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
@@ -850,9 +850,12 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                 @Zoom.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
                 @Zoom.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
                 @Zoom.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnZoom;
-                @Select.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
-                @Select.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
-                @Select.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSelect;
+                @LeftSelect.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLeftSelect;
+                @LeftSelect.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLeftSelect;
+                @LeftSelect.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLeftSelect;
+                @RightSelect.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRightSelect;
+                @RightSelect.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRightSelect;
+                @RightSelect.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRightSelect;
                 @NextTurn.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextTurn;
                 @NextTurn.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextTurn;
                 @NextTurn.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextTurn;
@@ -869,9 +872,12 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
-                @Select.started += instance.OnSelect;
-                @Select.performed += instance.OnSelect;
-                @Select.canceled += instance.OnSelect;
+                @LeftSelect.started += instance.OnLeftSelect;
+                @LeftSelect.performed += instance.OnLeftSelect;
+                @LeftSelect.canceled += instance.OnLeftSelect;
+                @RightSelect.started += instance.OnRightSelect;
+                @RightSelect.performed += instance.OnRightSelect;
+                @RightSelect.canceled += instance.OnRightSelect;
                 @NextTurn.started += instance.OnNextTurn;
                 @NextTurn.performed += instance.OnNextTurn;
                 @NextTurn.canceled += instance.OnNextTurn;
@@ -1036,7 +1042,8 @@ public class @DefaultInputActions : IInputActionCollection, IDisposable
     {
         void OnPoint(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
-        void OnSelect(InputAction.CallbackContext context);
+        void OnLeftSelect(InputAction.CallbackContext context);
+        void OnRightSelect(InputAction.CallbackContext context);
         void OnNextTurn(InputAction.CallbackContext context);
         void OnShowMenu(InputAction.CallbackContext context);
     }

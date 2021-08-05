@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using SangjiagouCore;
 
@@ -26,7 +27,7 @@ public class UIHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void ShowWarningBox(string message)
@@ -93,7 +94,7 @@ public class UIHandler : MonoBehaviour
         var states = Game.CurrentEntities.States;
         string str = $"{Game.CurrentEntities.Year}年{Game.CurrentEntities.Month}月\n";
         foreach (var s in states) {
-           str += $"{s.Name} - 民生：{s.Satisfaction} 礼乐：{s.Ceremony}人口：{s.Population} 兵士：{s.Army} 粮食：{s.Food }\n";
+            str += $"{s.Name} - 民生：{s.Satisfaction} 礼乐：{s.Ceremony}人口：{s.Population} 兵士：{s.Army} 粮食：{s.Food }\n";
         }
         Debug.Log(str);
     }
@@ -125,13 +126,50 @@ public class UIHandler : MonoBehaviour
         }
     }
 
-    public void HideAllUILayerPanels()
+    public List<string> RecordOpeningPanels()
     {
-        Animator anim;
+        List<string> l = new List<string>();
         for (int i = 0; i < UICanvas.transform.childCount; ++i) {
-            if (UICanvas.transform.GetChild(i).TryGetComponent(out anim)) {
+            var o = UICanvas.transform.GetChild(i);
+            if (o.TryGetComponent(out Animator anim) && anim.GetBool("Open")) {
+                l.Add(o.name);
+            }
+        }
+        return l;
+    }
+
+    public void HideAllPanels()
+    {
+        for (int i = 0; i < UICanvas.transform.childCount; ++i) {
+            if (UICanvas.transform.GetChild(i).TryGetComponent(out Animator anim)) {
                 anim.SetBool("Open", false);
             }
         }
+    }
+
+    public void ShowPanels(List<string> l)
+    {
+        for (int i = 0; i < UICanvas.transform.childCount; ++i) {
+            var o = UICanvas.transform.GetChild(i);
+            if (l.Contains(o.name) && o.TryGetComponent(out Animator anim)) {
+                anim.SetBool("Open", true);
+            }
+        }
+    }
+
+    public void ShowTopBanner(string text, string buttonText, UnityAction onButtonClick)
+    {
+        var banner = UICanvas.transform.Find("Top Banner");
+        banner.Find("Text").GetComponent<Text>().text = text;
+        var button = banner.Find("Button").GetComponent<Button>();
+        button.transform.Find("Text").GetComponent<Text>().text = buttonText;
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(onButtonClick);
+        banner.GetComponent<Animator>().SetBool("Open", true);
+    }
+
+    public void HideTopBanner()
+    {
+        UICanvas.transform.Find("Top Banner").GetComponent<Animator>().SetBool("Open", false);
     }
 }

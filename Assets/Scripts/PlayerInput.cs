@@ -9,7 +9,8 @@ public class PlayerInput : ScriptableObject, DefaultInputActions.IGameplayAction
 {
     public event UnityAction<Vector2> Point = delegate { };
     public event UnityAction<Vector2> Zoom = delegate { };
-    public event UnityAction Select = delegate { };
+    public event UnityAction LeftSelect = delegate { };
+    public event UnityAction RightSelect = delegate { };
     public event UnityAction NextTurn = delegate { };
     public event UnityAction ShowMenu = delegate { };
     DefaultInputActions inputActions;
@@ -39,10 +40,17 @@ public class PlayerInput : ScriptableObject, DefaultInputActions.IGameplayAction
         }
     }
 
-    public void OnSelect(InputAction.CallbackContext context)
+    public void OnLeftSelect(InputAction.CallbackContext context)
     {
         if(context.phase == InputActionPhase.Canceled) {
-            Select();
+            LeftSelect();
+        }
+    }
+
+    public void OnRightSelect(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Canceled) {
+            RightSelect();
         }
     }
 

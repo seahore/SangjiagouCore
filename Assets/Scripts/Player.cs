@@ -9,6 +9,12 @@ using SangjiagouCore;
 
 public class Player : MonoBehaviour
 {
+    enum Mode
+    {
+        Normal,
+        SelectTown,
+    }
+
     public GameObject DebugObject;
     public PlayerInput Input;
     public UIHandler UIHandler;
@@ -19,10 +25,23 @@ public class Player : MonoBehaviour
     int id;
     public int ID => id;
 
+    Mode mode;
+
     School playerSchool;
+
+    #region 选择城镇模式使用的属性
+
+    List<string> openingPanels;
+    UnityAction<Town> selectTownCallback;
+
+    #endregion
+
+    #region 和用户输入有关的属性
 
     Vector2 mousePosition;
     Vector2 mouseScroll;
+
+    #endregion
 
     void OnEnable()
     {
@@ -31,7 +50,8 @@ public class Player : MonoBehaviour
         Input.Point += CheckTooltipAndShow;
         Input.Zoom += UpdateMouseScroll;
         Input.Zoom += CameraZoom;
-        Input.Select += SelectMap;
+        Input.LeftSelect += SelectMapTile;
+        Input.RightSelect += SelectTownInSelectTownMode;
         Input.NextTurn += NextTurn;
         Input.ShowMenu += ShowMenu;
     }
@@ -43,7 +63,8 @@ public class Player : MonoBehaviour
         Input.Point -= CheckTooltipAndShow;
         Input.Zoom -= UpdateMouseScroll;
         Input.Zoom -= CameraZoom;
-        Input.Select -= SelectMap;
+        Input.LeftSelect -= SelectMapTile;
+        Input.RightSelect -= SelectTownInSelectTownMode;
         Input.NextTurn -= NextTurn;
         Input.ShowMenu -= ShowMenu;
     }
@@ -51,6 +72,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         id = 1;
+        mode = Mode.Normal;
     }
 
     void Start()
@@ -98,7 +120,7 @@ public class Player : MonoBehaviour
         MainCamera.GetComponent<CameraController>().Zoom(scroll.y);
     }
 
-    void SelectMap()
+    void SelectMapTile()
     {
         if (GraphicRaycast(mousePosition).Count > 0) return;
         
@@ -115,6 +137,21 @@ public class Player : MonoBehaviour
             }
         }
         UIHandler.OnSelectTile(town);
+    }
+
+    void SelectTownInSelectTownMode()
+    {
+        if (mode != Mode.SelectTown || GraphicRaycast(mousePosition).Count > 0) return;
+
+        Vector3 t = MainCamera.ScreenToWorldPoint(mousePosition);
+        Vector2Int selection = new Vector2Int((int)t.x, (int)t.y);
+        if (selection.x < 0 || selection.y < 0 || selection.x >= Game.CurrentEntities.MapSize.x || selection.y >= Game.CurrentEntities.MapSize.y) return;
+        foreach (var i in Game.CurrentEntities.Towns) {
+            if (i.Position == selection) {
+                QuitSelectTownMode(i);
+                return;
+            }
+        }
     }
 
     /// <summary>
@@ -143,12 +180,19 @@ public class Player : MonoBehaviour
     /// <param name="callback">回调函数</param>
     public void EnterSelectTownMode(UnityAction<Town> callback)
     {
-        Town selected = null;
-        UIHandler.HideAllUILayerPanels();
+        mode = Mode.SelectTown;
+        openingPanels = UIHandler.RecordOpeningPanels();
+        UIHandler.HideAllPanels();
+        selectTownCallback = callback;
+        UIHandler.ShowTopBanner("选择城镇", "取消", () => { QuitSelectTownMode(null); });
+    }
 
-        // 处理选择的代码
-        
-        callback(selected);
+    public void QuitSelectTownMode(Town selected)
+    {
+        mode = Mode.Normal;
+        selectTownCallback(selected);
+        UIHandler.HideTopBanner();
+        UIHandler.ShowPanels(openingPanels);
     }
 
     void ShowMenu()

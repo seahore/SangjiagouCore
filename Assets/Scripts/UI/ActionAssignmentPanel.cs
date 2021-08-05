@@ -8,13 +8,19 @@ using SangjiagouCore;
 public class ActionAssignmentPanel : MonoBehaviour
 {
     public GameObject ScholarSelection;
+    public GameObject SelectTownButtonPrefab;
 
+    Player player;
     List<Scholar> selecting;
 
     Town selectingTown;
 
+    Dropdown dropdown;
+
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        dropdown = transform.Find("Actions Dropdown").GetComponent<Dropdown>();
         Refresh();
     }
 
@@ -53,21 +59,32 @@ public class ActionAssignmentPanel : MonoBehaviour
         }
     }
 
+    public void OnSelectTownButtonClick(Text buttonText)
+    {
+        player.EnterSelectTownMode((Town t) => { selectingTown = t; buttonText.text = selectingTown.Name; });
+    }
+
     public void SetArgumentsSetters(List<Type> types)
     {
-        Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        var dt = dropdown.GetComponent<RectTransform>();
+        float x = dt.anchoredPosition.x;
+        float y = dt.anchoredPosition.y;
+        float h = dt.rect.height;
         foreach (var type in types) {
-            if(type == typeof(Town)) {
-                player.EnterSelectTownMode((Town t)=>selectingTown = t);
+            y -= h;
+            if (type == typeof(Town)) {
+                var o = Instantiate(SelectTownButtonPrefab, transform).transform;
+                o.GetComponent<Button>().onClick.AddListener(()=> { OnSelectTownButtonClick(o.Find("Text").GetComponent<Text>()); });
+                o.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
             }
         }
     }
 
-    public void OnActionsDropdownChanged(int index)
+    public void OnActionsDropdownChanged()
     {
-        switch(index) {
+        switch(dropdown.value) {
             case 0:     // 周游
-                // ToDo
+                SetArgumentsSetters(new List<Type> { typeof(Town) });
                 break;
             case 1:     // 游说
                 // ToDo
@@ -77,9 +94,13 @@ public class ActionAssignmentPanel : MonoBehaviour
 
     public void OnAssignButtonClick()
     {
-        var dropdown = transform.Find("Actions Dropdown").GetComponent<Dropdown>();
-        if(dropdown.options[dropdown.value].text == "周游") {
-            
+        switch (dropdown.value) {
+            case 0:     // 周游
+                // ToDo
+                break;
+            case 1:     // 游说
+                // ToDo
+                break;
         }
     }
 }

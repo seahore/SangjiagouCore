@@ -22,9 +22,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Select",
+                    "name": "LeftSelect",
                     "type": "Button",
                     "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "RightSelect",
+                    "type": "Button",
+                    "id": "416eeac3-fe7b-46bf-ba1f-c1ae8a1a65b3",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -49,23 +57,12 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "143bb1cd-cc10-4eca-a2f0-a3664166fe91",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Select",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "05f6913d-c316-48b2-a6bb-e225f14c7960",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Select",
+                    "action": "LeftSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -76,18 +73,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Touch",
-                    "action": "Select",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ee3d0cd2-254e-47a7-a8cb-bc94d9658c54",
-                    "path": "<Joystick>/trigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Select",
+                    "action": "LeftSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -98,7 +84,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "Select",
+                    "action": "LeftSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -165,6 +151,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "45469cb4-a8ad-40af-a5da-cee9052354c1",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RightSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
