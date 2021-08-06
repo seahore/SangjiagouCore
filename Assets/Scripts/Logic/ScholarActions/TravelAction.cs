@@ -24,6 +24,8 @@ namespace SangjiagouCore
         {
             _destination = destination;
         }
+
+        public override string ToString() => "准备前往<b>" + _destination.Controller.Name + "</b>的<b>" + _destination.Name + "</b>。";
     }
 
 }

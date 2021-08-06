@@ -9,16 +9,21 @@ public class SelectSchoolPanel : MonoBehaviour
     public GameObject MaskPrefab;
     public GameObject SchoolSelection;
 
+    UIHandler handler;
+
     School selecting;
     int PlayerID;
 
     void Start()
     {
+        handler = GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>();
         selecting = null;
         PlayerID = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ID;
 
         var mask = Instantiate(MaskPrefab, transform.parent);
         transform.SetParent(mask.transform);
+
+        handler.HideAllPanels();
 
         var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
         if (mainCam.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Focused")) {
@@ -62,8 +67,6 @@ public class SelectSchoolPanel : MonoBehaviour
 
     public void OnOKButtonClick()
     {
-        GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>().HideAllPanels();
-
         foreach (var i in Game.CurrentEntities.Schools) {
             i.PlayerID = School.AIControl;
         }
@@ -80,6 +83,8 @@ public class SelectSchoolPanel : MonoBehaviour
             mainCam.GetComponent<Animator>().SetTrigger("Focus");
         }
         GetComponent<Animator>().SetTrigger("Close");
+
+        handler.ShowPanels(new List<string> { "Player Panel" });
     }
 
     /// <summary>
