@@ -147,6 +147,15 @@ public class UIHandler : MonoBehaviour
         }
     }
 
+    public void HideAllUpperPanels()
+    {
+        if (UpperUICanvas.transform.childCount > 0) {
+            var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
+            mainCam.GetComponent<Animator>().SetTrigger("Focus");
+            UpperUICanvas.gameObject.SetActive(false);
+        }
+    }
+
     public void ShowPanels(List<string> l)
     {
         for (int i = 0; i < UICanvas.transform.childCount; ++i) {
@@ -154,6 +163,15 @@ public class UIHandler : MonoBehaviour
             if (l.Contains(o.name) && o.TryGetComponent(out Animator anim)) {
                 anim.SetBool("Open", true);
             }
+        }
+    }
+
+    public void ShowUpperPanels()
+    {
+        if (UpperUICanvas.transform.childCount > 0) {
+            var mainCam = GameObject.FindGameObjectWithTag("MainCamera");
+            mainCam.GetComponent<Animator>().SetTrigger("Unfocus");
+            UpperUICanvas.gameObject.SetActive(true);
         }
     }
 

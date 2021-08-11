@@ -183,6 +183,7 @@ public class Player : MonoBehaviour
         mode = Mode.SelectTown;
         openingPanels = UIHandler.RecordOpeningPanels();
         UIHandler.HideAllPanels();
+        UIHandler.HideAllUpperPanels();
         selectTownCallback = callback;
         UIHandler.ShowTopBanner("选择城镇", "取消", () => { QuitSelectTownMode(null); });
     }
@@ -192,6 +193,7 @@ public class Player : MonoBehaviour
         mode = Mode.Normal;
         selectTownCallback(selected);
         UIHandler.HideTopBanner();
+        UIHandler.ShowUpperPanels();
         UIHandler.ShowPanels(openingPanels);
     }
 

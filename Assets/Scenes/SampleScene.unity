@@ -639,6 +639,8 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: "\u6E38\u8BF4"
       m_Image: {fileID: 0}
+    - m_Text: "\u5BF9\u7B56"
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2839,6 +2841,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ScholarSelection: {fileID: 2845228980968305770, guid: 34911af99d21df042b71dcb489b3f297, type: 3}
   SelectTownButtonPrefab: {fileID: 8615446544042683639, guid: 69e6b002158e4be4b876993965e93289, type: 3}
+  DraftSuggestionButtonPrefab: {fileID: 8615446544042683639, guid: 940f8efdfcde4c34d84a74204bd5c2bf, type: 3}
+  DraftSuggestionPanelPrefab: {fileID: 3993935854640542340, guid: 658d24dffb2431e42a35d55837e78252, type: 3}
 --- !u!1 &719319565
 GameObject:
   m_ObjectHideFlags: 0

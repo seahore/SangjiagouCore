@@ -43,13 +43,15 @@ namespace SangjiagouCore
         public ProposeAction(Scholar actor, Town place, StateAction proposition)
         : base(actor, place)
         {
-            if (!actor.BelongTo.AllowedPropositionTypes.Contains(_proposition.GetType()))
+            if (!actor.BelongTo.AllowedPropositionTypes.Contains(proposition.GetType()))
                 Debug.LogWarning($"{actor.BelongTo.Name}的{actor.FullName}提出了不符合其学家立场的对策: {proposition.GetType().Name}");
             if (!place.IsCapital)
                 Debug.LogWarning($"{actor.BelongTo.Name}的{actor.FullName}在{place.Name}提出了对策，但{place.Name}不是京城");
 
             _proposition = proposition;
         }
+
+        public override string ToString() => $"向<b>{_actor.Location.Controller.Name}</b>的君主提出{_proposition}的对策";
 
         public Report GetReport() => _report;
     }

@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u9009\u62E9\u57CE\u9547"
+  m_Text: "\u8D77\u8349\u7B56\u8A00\n"
 --- !u!1 &8615446544042683639
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 7465713617267027100}
   - component: {fileID: 2207201296851027123}
   m_Layer: 5
-  m_Name: Select Town Button
+  m_Name: Draft Suggestion Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

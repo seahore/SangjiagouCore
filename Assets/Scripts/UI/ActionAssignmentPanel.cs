@@ -9,10 +9,13 @@ public class ActionAssignmentPanel : MonoBehaviour
 {
     public GameObject ScholarSelection;
     public GameObject SelectTownButtonPrefab;
+    public GameObject DraftSuggestionButtonPrefab;
+    public GameObject DraftSuggestionPanelPrefab;
 
     readonly Color colorForAssigned = new Color((float)0xAF / 0xFF, (float)0xEE / 0xFF, (float)0xEE / 0xFF);
 
     Town townSelected;
+    StateAction suggestionDrafted;
 
     Player player;
     List<Scholar> selecting;
@@ -34,6 +37,7 @@ public class ActionAssignmentPanel : MonoBehaviour
     public void Refresh()
     {
         townSelected = null;
+        suggestionDrafted = null;
 
         School playerSchool = Game.CurrentEntities.GetPlayerSchool(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ID);
         selecting = new List<Scholar>();
@@ -79,23 +83,38 @@ public class ActionAssignmentPanel : MonoBehaviour
         });
     }
 
+    public void OnDraftSuggestionButtonClick(Text buttonText)
+    {
+        var dsp = Instantiate(DraftSuggestionPanelPrefab, GameObject.Find("Upper UI Canvas").transform).transform;
+        dsp.GetComponent<DraftSuggestionPanel>().SetCallback((StateAction action) => {
+            if (action is null) return;
+            suggestionDrafted = action;
+            buttonText.text = suggestionDrafted.ToString();
+        });
+    }
+
     public void SetArgumentsSetters(List<Type> types)
     {
         float x = 115;
         float y = 16;
-        float h = 32;
+        float h = 36;
         var argPanel = transform.Find("Action Arguments");
         for (int i = 0; i < argPanel.childCount; ++i) {
             Destroy(argPanel.GetChild(i).gameObject);
         }
         foreach (var type in types) {
             y -= h;
+            Transform o = null;
             if (type == typeof(Town)) {
-                var o = Instantiate(SelectTownButtonPrefab, argPanel).transform;
+                o = Instantiate(SelectTownButtonPrefab, argPanel).transform;
                 o.name = "Select Town Button";
                 o.GetComponent<Button>().onClick.AddListener(() => { OnSelectTownButtonClick(o.Find("Text").GetComponent<Text>()); });
-                o.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
+            } else if (type == typeof(StateAction)) {
+                o = Instantiate(DraftSuggestionButtonPrefab, argPanel).transform;
+                o.name = "Draft Suggestion Button";
+                o.GetComponent<Button>().onClick.AddListener(()=> { OnDraftSuggestionButtonClick(o.Find("Text").GetComponent<Text>()); });
             }
+            o.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
         }
     }
 
@@ -109,7 +128,9 @@ public class ActionAssignmentPanel : MonoBehaviour
                 types.Add(typeof(Town));
                 break;
             case 2:     // 游说
-                // ToDo
+                break;
+            case 3:     // 对策
+                types.Add(typeof(StateAction));
                 break;
         }
         SetArgumentsSetters(types);
@@ -132,7 +153,38 @@ public class ActionAssignmentPanel : MonoBehaviour
                 }
                 break;
             case 2:     // 游说
-                // ToDo
+                foreach (var s in selecting) {
+                    s.Action = new DiscussWithMonarchAction(s, s.Location);
+                }
+                    break;
+            case 3:     // 对策
+                if (suggestionDrafted is null)
+                    return;
+                foreach (var s in selecting) {
+                    if (!s.Location.IsCapital)
+                        continue;
+                    Type stateActionType = suggestionDrafted.GetType();
+                    State actor = s.Location.Controller;
+                    School prop = s.BelongTo;
+                    switch (stateActionType.Name) {
+                        case "DeclareWarAction": {
+                            var a = (DeclareWarAction)suggestionDrafted;
+                            suggestionDrafted = new DeclareWarAction(actor, prop, a.Declaree);
+                            break;
+                        }
+                        case "DeclareAggressiveWarAction": {
+                            var a = (DeclareAggressiveWarAction)suggestionDrafted;
+                            suggestionDrafted = new DeclareAggressiveWarAction(actor, prop, a.Declaree, a.Target);
+                            break;
+                        }
+                        case "DevelopAction": {
+                            var a = (DevelopAction)suggestionDrafted;
+                            suggestionDrafted = new DevelopAction(actor, prop, a.Target);
+                            break;
+                        }
+                    }
+                    s.Action = new ProposeAction(s, s.Location, suggestionDrafted);
+                }
                 break;
         }
         Refresh();
