@@ -88,10 +88,12 @@ namespace SangjiagouCore {
         }
 
         public override void Act() {
-
+            _target.Development += (int)(Random.Range(25, 75) * (1 + (_actor.PoliTech * 0.1f)));
         }
 
         public Report GetReport() => _report;
+
+        public override string ToString() => $"<b>{_actor.Name}</b>在<b>{_target.Name}</b>进行营造";
     }
 
 }

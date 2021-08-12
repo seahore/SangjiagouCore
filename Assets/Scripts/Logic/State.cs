@@ -405,13 +405,11 @@ namespace SangjiagouCore
         public void AIPlan()
         {
             if (ActionQueue.Count != 0) {
-                static int ActionCompare(StateAction x, StateAction y)
-                {
+                ActionQueue.Sort((StateAction x, StateAction y) => {
                     float ax = x.Assess(), ay = y.Assess();
                     if (ax > ay) return 1;
                     return ax == ay ? 0 : -1;
-                }
-                ActionQueue.Sort(ActionCompare);
+                });
                 _selectedAction = ActionQueue[0];
             } else {
                 _selectedAction = null;

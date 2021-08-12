@@ -4,24 +4,30 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using SangjiagouCore;
+using static SangjiagouCore.Utilities.ChineseNumeral;
 
 public class UIHandler : MonoBehaviour
 {
     public Canvas UICanvas;
     public Canvas UpperUICanvas;
     public Canvas TopUICanvas;
+    public MapRenderer Tilemap;
     public GameObject SavedGamesPanelPrefab;
     public GameObject SettingsPanelPrefab;
     public GameObject SelectSchoolPanelPrefab;
+    public GameObject NextTurnProgressPrefab;
+    public GameObject NextTurnInfoPanelPrefab;
     public GameObject WarningBoxPrefab;
     public GameObject TooltipPrefab;
 
     GameObject tooltip;
+    Player player;
 
     // Start is called before the first frame update
     void Start()
     {
         tooltip = Instantiate(TooltipPrefab, TopUICanvas.transform);
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -90,11 +96,21 @@ public class UIHandler : MonoBehaviour
 
     public void OnNextTurnButtonClick()
     {
+        HideAllPanels();
+        var ntp = Instantiate(NextTurnProgressPrefab, UpperUICanvas.transform).transform;
         Game.CurrentEntities.NextTurn();
+        GameObject.Find("Player Panel").transform.Find("Next Turn Button/Text").GetComponent<Text>().text = $"昭公{Int2Chinese(Game.CurrentEntities.Year)}年{Int2Chinese(Game.CurrentEntities.Month)}月";
+        Tilemap.RefreshMap();
+        ShowPanels(new List<string> { "Player Panel" });
+        var ntip = Instantiate(NextTurnInfoPanelPrefab, UpperUICanvas.transform).transform;
+        ntip.Find("Title").GetComponent<Text>().text = $"{Game.CurrentEntities.GetPlayerSchool(player.ID).Name}内部参考";
+        ntip.Find("Scroll View/Viewport/Info").GetComponent<Text>().text = Game.CurrentEntities.GetMonthlyReport();
+        ntp.GetComponent<Animator>().SetTrigger("Close");
+
         var states = Game.CurrentEntities.States;
         string str = $"{Game.CurrentEntities.Year}年{Game.CurrentEntities.Month}月\n";
         foreach (var s in states) {
-            str += $"{s.Name} - 民生：{s.Satisfaction} 礼乐：{s.Ceremony}人口：{s.Population} 兵士：{s.Army} 粮食：{s.Food }\n";
+            str += $"{s.Name} - 民生：{s.Satisfaction} 礼乐：{s.Ceremony}人口：{s.Population} 兵士：{s.Army} 粮食：{s.Food}\n";
         }
         Debug.Log(str);
     }

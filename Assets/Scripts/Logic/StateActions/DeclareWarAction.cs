@@ -48,7 +48,7 @@ namespace SangjiagouCore
             if (!_declaree.Monarch.IsInvader)
                 return CANNOT_ACT;
 
-            return 0.0f;
+            return 1.0f;
         }
 
         public override void Act()
@@ -74,6 +74,8 @@ namespace SangjiagouCore
         }
 
         public Report GetReport() => _report;
+
+        public override string ToString() => $"<b>{_actor.Name}</b>讨伐<b>{_declaree.Name}</b>的义战";
     }
 
 }

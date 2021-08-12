@@ -192,8 +192,8 @@ namespace SangjiagouCore {
             _currentEntities.Roads.Add((tl[2], tl[1]));
             _currentEntities.Roads.Add((tl[2], tl[3]));
             _currentEntities.Roads.Add((tl[3], tl[2]));
-            School rujia = new School("儒家", new List<Scholar>(), new List<Type> { typeof(DeclareWarAction) });
-            School mojia = new School("墨家", new List<Scholar>(), new List<Type>());
+            School rujia = new School("儒家", new List<Scholar>(), new List<Type> { typeof(DeclareWarAction), typeof(DeclareAggressiveWarAction), typeof(DevelopAction) });
+            School mojia = new School("墨家", new List<Scholar>(), new List<Type> { typeof(DeclareWarAction), typeof(DeclareAggressiveWarAction), typeof(DevelopAction) });
             List<Scholar> lsQufu = new List<Scholar> {
                 new Scholar("孟", "轲", "子舆", 40, 80, null, tl[0], "TogashiYuta.jpg")
             };

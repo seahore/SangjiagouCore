@@ -108,7 +108,7 @@ namespace SangjiagouCore
         /// <summary>
         /// 该城发展度
         /// </summary>
-        public int Development { get => _development; }
+        public int Development { get => _development; set { _development = value; } }
 
         bool _isCapital;
         /// <summary>

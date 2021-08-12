@@ -188,6 +188,42 @@ namespace SangjiagouCore
             }
         }
 
+        public string GetMonthlyReport()
+        {
+            string text = "";
+            foreach (var s in _states) {
+                if(s.FormerAction is null) {
+                    text += $"<b>{s.Name}</b>本月无所用事。\n";
+                    continue;
+                }
+                switch (s.FormerAction.GetType().Name) {
+                    case "DeclareWarAction": {
+                        var action = (DeclareWarAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor.Name}</b>在讨伐<b>{action.Declaree.Name}</b>的义战中";
+                        text += report.Successful ? "<b>胜利</b>" : "<b>败北</b>";
+                        text += $"，<b>{action.Actor.Name}</b>损失{report.AttackerLoss}人，<b>{action.Declaree.Name}</b>损失{report.DefenderLoss}人。\n";
+                        break;
+                    }
+                    case "DeclareAggressiveWarAction": {
+                        var action = (DeclareAggressiveWarAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor.Name}</b>在侵略<b>{action.Declaree.Name}</b>并索取<b>{action.Target.Name}</b>的不义战中";
+                        text += report.Successful ? "<b>胜利</b>" : "<b>败北</b>";
+                        text += $"，<b>{action.Actor.Name}</b>损失{report.AttackerLoss}人，<b>{action.Declaree.Name}</b>损失{report.DefenderLoss}人。\n";
+                        break;
+                    }
+                    case "DevelopAction": {
+                        var action = (DevelopAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor.Name}</b>在<b>{action.Target.Name}</b>进行营造，当地发展度提高了{report.DevelopmentIncrease}。\n";
+                        break;
+                    }
+                }
+            }
+            return text;
+        }
+
         public School GetPlayerSchool(int playerID)
         {
             foreach (var s in _schools) {

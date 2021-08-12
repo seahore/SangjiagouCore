@@ -43,7 +43,7 @@ namespace SangjiagouCore {
         }
 
         public override float Assess() {
-            return 0.0f;
+            return 1.0f;
         }
     
 
@@ -69,6 +69,8 @@ namespace SangjiagouCore {
         }
 
         public new Report GetReport() => _report;
+
+        public override string ToString() => $"<b>{_actor.Name}</b>向<b>{_declaree.Name}</b>索取<b>{_target.Name}</b>的不义战";
     }
 
 }

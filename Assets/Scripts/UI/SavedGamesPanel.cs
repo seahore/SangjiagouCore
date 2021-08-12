@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 using SangjiagouCore;
+using static SangjiagouCore.Utilities.ChineseNumeral;
 
 public class SavedGamesPanel : MonoBehaviour
 {
@@ -12,10 +13,14 @@ public class SavedGamesPanel : MonoBehaviour
     public GameObject SavedGameSelection;
     public GameObject SelectSchoolPanelPrefab;
 
+    UIHandler handler;
+
     FileInfo[] _savedGames;
 
     void Start()
     {
+        handler = GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>();
+
         var mask = Instantiate(MaskPrefab, transform.parent);
         transform.SetParent(mask.transform);
 
@@ -70,7 +75,7 @@ public class SavedGamesPanel : MonoBehaviour
 
             }
         } catch (IOException) {
-            GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
+            handler.ShowWarningBox($"存档文件正在被占用");
         }
     }
 
@@ -81,11 +86,13 @@ public class SavedGamesPanel : MonoBehaviour
         try {
             Game.LoadGame(filename, false);
         } catch(FileNotFoundException) {
-            GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>().ShowWarningBox($"\'{filename}\'无效。");
+            handler.ShowWarningBox($"\'{filename}\'无效。");
         } catch (IOException) {
-            GameObject.FindWithTag("UIHandler").GetComponent<UIHandler>().ShowWarningBox($"存档文件正在被占用");
+            handler.ShowWarningBox($"存档文件正在被占用");
         }
         GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
+
+        GameObject.Find("Player Panel").transform.Find("Next Turn Button/Text").GetComponent<Text>().text = $"昭公{Int2Chinese(Game.CurrentEntities.Year)}年{Int2Chinese(Game.CurrentEntities.Month)}月";
 
         Instantiate(SelectSchoolPanelPrefab, GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>().UpperUICanvas.transform);
         GetComponent<Animator>().SetTrigger("Close");   // 后面还有一个选择学派的面板要显示，所以不解除模糊

@@ -116,20 +116,16 @@ namespace SangjiagouCore {
 
             // 选取影响力占比最小的国家增加影响力
             List<State> states = new List<State>(Game.CurrentEntities.States);
-            int stateCompare(State x, State y)
-            {
+            states.Sort((State x, State y) => {
                 float rx = x.InfluenceRatio(this);
                 float ry = y.InfluenceRatio(this);
                 if (rx < ry) return -1;
                 return rx == ry ? 0 : 1;
-            }
-            int scholarSophistryCompare(Scholar x, Scholar y)
-            {
+            });
+            unassigned.Sort((Scholar x, Scholar y) => {
                 if (x.Sophistry < y.Sophistry) return -1;
                 return x.Sophistry == y.Sophistry ? 0 : 1;
-            }
-            states.Sort(stateCompare);
-            unassigned.Sort(scholarSophistryCompare);
+            });
             for (int i = 0; i < states.Count; ++i) {
                 if (unassigned.Count == 0)
                     return;

@@ -31,7 +31,7 @@ public class GlobalInitializer : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     void Update()

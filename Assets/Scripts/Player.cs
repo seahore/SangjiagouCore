@@ -171,7 +171,7 @@ public class Player : MonoBehaviour
 
     void NextTurn()
     {
-
+        UIHandler.OnNextTurnButtonClick();
     }
 
     /// <summary>

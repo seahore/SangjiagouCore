@@ -89,7 +89,19 @@ public class ActionAssignmentPanel : MonoBehaviour
         dsp.GetComponent<DraftSuggestionPanel>().SetCallback((StateAction action) => {
             if (action is null) return;
             suggestionDrafted = action;
-            buttonText.text = suggestionDrafted.ToString();
+            string text = "建议进行";
+            switch (suggestionDrafted.GetType().Name) {
+                case "DeclareWarAction":
+                    text += "<b>义战</b>";
+                    break;
+                case "DeclareAggressiveWarAction":
+                    text += "<b>不义战</b>";
+                    break;
+                case "DevelopAction":
+                    text += "<b>营造</b>";
+                    break;
+            }
+            buttonText.text = text;
         });
     }
 
