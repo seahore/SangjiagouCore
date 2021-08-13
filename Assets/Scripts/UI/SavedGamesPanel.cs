@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 using SangjiagouCore;
-using static SangjiagouCore.Utilities.ChineseNumeral;
+using static SangjiagouCore.Utilities.ChineseNumerals;
 
 public class SavedGamesPanel : MonoBehaviour
 {
@@ -79,7 +79,7 @@ public class SavedGamesPanel : MonoBehaviour
         }
     }
 
-    public void OnLoadButtonClick()
+    public void OnLoadButtonClick(bool switchScene)
     {
         string filename = transform.Find("Filename Input").GetComponent<InputField>().text.Trim();
         if (filename == "") return;
@@ -90,11 +90,29 @@ public class SavedGamesPanel : MonoBehaviour
         } catch (IOException) {
             handler.ShowWarningBox($"存档文件正在被占用");
         }
+
+        if (switchScene) {
+            handler.SetLoadingMask(() => {
+                SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+                void f(Scene scene, LoadSceneMode mode) {
+                    if (scene.name == "GameScene")
+                        OnLoaded();
+                    SceneManager.sceneLoaded -= f;
+                };
+                SceneManager.sceneLoaded += f;
+            });
+        } else {
+            OnLoaded();
+            GetComponent<Animator>().SetTrigger("Close");   // 后面还有一个选择学派的面板要显示，所以不解除模糊
+        }
+    }
+
+    public void OnLoaded()
+    {
         GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
 
         GameObject.Find("Player Panel").transform.Find("Next Turn Button/Text").GetComponent<Text>().text = $"昭公{Int2Chinese(Game.CurrentEntities.Year)}年{Int2Chinese(Game.CurrentEntities.Month)}月";
 
         Instantiate(SelectSchoolPanelPrefab, GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>().UpperUICanvas.transform);
-        GetComponent<Animator>().SetTrigger("Close");   // 后面还有一个选择学派的面板要显示，所以不解除模糊
     }
 }

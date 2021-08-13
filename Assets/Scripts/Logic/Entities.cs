@@ -193,7 +193,7 @@ namespace SangjiagouCore
             string text = "";
             foreach (var s in _states) {
                 if(s.FormerAction is null) {
-                    text += $"<b>{s.Name}</b>本月无所用事。\n";
+                    text += $"<b>{s.Name}</b>前月无所用事。\n";
                     continue;
                 }
                 switch (s.FormerAction.GetType().Name) {

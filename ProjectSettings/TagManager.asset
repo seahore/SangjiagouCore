@@ -9,6 +9,7 @@ TagManager:
   - UIHandler
   - BGMSource
   - SFXSource
+  - LoadingMask
   layers:
   - Default
   - TransparentFX

@@ -31,7 +31,7 @@ public class ActionAssignmentPanel : MonoBehaviour
 
     void Update()
     {
-        
+
     }
 
     public void Refresh()
@@ -64,7 +64,7 @@ public class ActionAssignmentPanel : MonoBehaviour
             o.GetComponent<RectTransform>().offsetMax = new Vector2(tw + unitWidth + 225, th);
             o.Find("Avatar").GetComponent<Image>().sprite = s.Avatar;
             o.Find("Name").GetComponent<Text>().text = s.FullCourtesyName;
-            if(!(s.Action is null)) {
+            if (!(s.Action is null)) {
                 o.Find("Button Face").GetComponent<Image>().color = colorForAssigned;
             }
             if (i % 3 == 2)
@@ -124,7 +124,7 @@ public class ActionAssignmentPanel : MonoBehaviour
             } else if (type == typeof(StateAction)) {
                 o = Instantiate(DraftSuggestionButtonPrefab, argPanel).transform;
                 o.name = "Draft Suggestion Button";
-                o.GetComponent<Button>().onClick.AddListener(()=> { OnDraftSuggestionButtonClick(o.Find("Text").GetComponent<Text>()); });
+                o.GetComponent<Button>().onClick.AddListener(() => { OnDraftSuggestionButtonClick(o.Find("Text").GetComponent<Text>()); });
             }
             o.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
         }
@@ -160,7 +160,7 @@ public class ActionAssignmentPanel : MonoBehaviour
                 if (townSelected is null)
                     return;
                 foreach (var s in selecting) {
-                    if(s.Location.Name != townSelected.Name) 
+                    if (s.Location.Name != townSelected.Name)
                         s.Action = new TravelAction(s, s.Location, townSelected);
                 }
                 break;
@@ -168,7 +168,7 @@ public class ActionAssignmentPanel : MonoBehaviour
                 foreach (var s in selecting) {
                     s.Action = new DiscussWithMonarchAction(s, s.Location);
                 }
-                    break;
+                break;
             case 3:     // 对策
                 if (suggestionDrafted is null)
                     return;

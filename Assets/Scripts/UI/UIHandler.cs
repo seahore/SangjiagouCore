@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using SangjiagouCore;
-using static SangjiagouCore.Utilities.ChineseNumeral;
+using static SangjiagouCore.Utilities.ChineseNumerals;
 
 public class UIHandler : MonoBehaviour
 {
@@ -19,18 +20,19 @@ public class UIHandler : MonoBehaviour
     public GameObject NextTurnInfoPanelPrefab;
     public GameObject WarningBoxPrefab;
     public GameObject TooltipPrefab;
+    public GameObject LoadingMaskPrefab;
 
     GameObject tooltip;
     Player player;
 
-    // Start is called before the first frame update
     void Start()
     {
         tooltip = Instantiate(TooltipPrefab, TopUICanvas.transform);
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        GameObject o = GameObject.FindGameObjectWithTag("Player");
+        if(o is null || !o.TryGetComponent(out player))
+            player = null;
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -73,6 +75,13 @@ public class UIHandler : MonoBehaviour
         Instantiate(SettingsPanelPrefab, UpperUICanvas.transform);
     }
 
+    public void OnMainMenuButtonClick()
+    {
+        SetLoadingMask(() => {
+            SceneManager.LoadSceneAsync("MainMenuScene", LoadSceneMode.Single);
+        });
+    }
+
     public void OnExitGameButtonClick()
     {
         Application.Quit();
@@ -104,6 +113,7 @@ public class UIHandler : MonoBehaviour
         ShowPanels(new List<string> { "Player Panel" });
         var ntip = Instantiate(NextTurnInfoPanelPrefab, UpperUICanvas.transform).transform;
         ntip.Find("Title").GetComponent<Text>().text = $"{Game.CurrentEntities.GetPlayerSchool(player.ID).Name}内部参考";
+        ntip.Find("Date").GetComponent<Text>().text = $"昭公{Int2Chinese(Game.CurrentEntities.Year)}年{Int2Chinese(Game.CurrentEntities.Month)}月刊";
         ntip.Find("Scroll View/Viewport/Info").GetComponent<Text>().text = Game.CurrentEntities.GetMonthlyReport();
         ntp.GetComponent<Animator>().SetTrigger("Close");
 
@@ -124,6 +134,13 @@ public class UIHandler : MonoBehaviour
             t.Set(town);
             t.Show();
         }
+    }
+
+    public void SetLoadingMask(UnityAction onFadedIn)
+    {
+        var lm = Instantiate(LoadingMaskPrefab);
+        lm.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+        lm.GetComponent<LoadingMask>().onFadedIn += onFadedIn;
     }
 
     public void DisplayTooltip(bool display, string content, Vector2 pos)

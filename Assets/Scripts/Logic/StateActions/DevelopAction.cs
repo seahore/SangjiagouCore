@@ -88,7 +88,10 @@ namespace SangjiagouCore {
         }
 
         public override void Act() {
-            _target.Development += (int)(Random.Range(25, 75) * (1 + (_actor.PoliTech * 0.1f)));
+            int increase = (int)(Random.Range(25, 75) * (1 + (_actor.PoliTech * 0.1f)));
+            _target.Development += increase;
+
+            _report = new Report(true, 0, increase);
         }
 
         public Report GetReport() => _report;
