@@ -43,13 +43,9 @@ namespace SangjiagouCore {
                 path = SavesPath;
             }
             path += Path.DirectorySeparatorChar + fileName;
-            FileStream file;
-            BinaryReader br;
-            file = new FileStream(path, FileMode.Open);
-            br = new BinaryReader(file);
             string json;
             if (encrypted) {
-                byte[] encryptedData = Convert.FromBase64String(br.ReadString());
+                byte[] encryptedData = Convert.FromBase64String(Encoding.UTF8.GetString(File.ReadAllBytes(path)));
                 DESCryptoServiceProvider des = new DESCryptoServiceProvider();
                 MemoryStream mstream = new MemoryStream();
                 CryptoStream cstream = new CryptoStream(mstream, des.CreateDecryptor(_cryptKeys, _cryptKeys), CryptoStreamMode.Write);
@@ -57,11 +53,8 @@ namespace SangjiagouCore {
                 cstream.FlushFinalBlock();
                 json = Encoding.UTF8.GetString(mstream.ToArray());
             } else {
-                json = br.ReadString();
+                json = Encoding.UTF8.GetString(File.ReadAllBytes(path));
             }
-            br.Close();
-
-            Debug.Log(json);
 
             _currentEntities.Unpack(JsonMapper.ToObject<Entities.Package>(json));
             _currentEntities.Relink();
@@ -80,12 +73,7 @@ namespace SangjiagouCore {
             string saveFilePath = SavesPath + Path.DirectorySeparatorChar + fileName;
             string json = JsonMapper.ToJson(_currentEntities.Pack());
 
-            Debug.Log(json);
-
-            FileStream saveFile;
-            BinaryWriter bw;
-            saveFile = new FileStream(saveFilePath, FileMode.Create);
-            bw = new BinaryWriter(saveFile);
+            File.Create(saveFilePath).Dispose();
             if (encrypt) {
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 DESCryptoServiceProvider des = new DESCryptoServiceProvider();
@@ -94,11 +82,10 @@ namespace SangjiagouCore {
                 cstream.Write(data, 0, data.Length);
                 cstream.FlushFinalBlock();
                 string encryptedData = Convert.ToBase64String(mstream.ToArray());
-                bw.Write(encryptedData);
+                File.WriteAllBytes(saveFilePath, Encoding.UTF8.GetBytes(encryptedData));
             } else {
-                bw.Write(json);
+                File.WriteAllBytes(saveFilePath, Encoding.UTF8.GetBytes(json));
             }
-            bw.Close();
         }
 
         /// <summary>
