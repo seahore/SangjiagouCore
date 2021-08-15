@@ -14,7 +14,7 @@ namespace SangjiagouCore {
     {
         readonly static byte[] _cryptKeys = { 0xCA, 0xFE, 0xBA, 0xBE, 0xDA, 0xD0, 0xBE, 0xD0 };
 
-        public readonly static string ScenariosPath = Application.dataPath + Path.DirectorySeparatorChar + "Scenarios";
+        public readonly static string HistoriesPath = Application.dataPath + Path.DirectorySeparatorChar + "Histories";
         public readonly static string SavesPath = Application.dataPath + Path.DirectorySeparatorChar + "Saves";
         public readonly static string AvatarsPath = Application.dataPath + Path.DirectorySeparatorChar + "Avatars";
 
@@ -26,17 +26,17 @@ namespace SangjiagouCore {
         /// 读取存档或开场
         /// </summary>
         /// <param name="fileName">文件名（带扩展名）</param>
-        /// <param name="encrypted">是否加密并用Base64编码转换过</param>
         /// <param name="isScenario">是否是开场文件</param>
-        public static void LoadGame(string fileName, bool encrypted = true, bool isScenario = false)
+        /// <param name="encrypted">是否加密并用Base64编码转换过</param>
+        public static void LoadGame(string fileName, bool isScenario = false, bool encrypted = true)
         {
             _currentEntities = new Entities();
 
             string path;
             if (isScenario) {
-                if (!Directory.Exists(ScenariosPath))
-                    Directory.CreateDirectory(ScenariosPath);
-                path = ScenariosPath;
+                if (!Directory.Exists(HistoriesPath))
+                    Directory.CreateDirectory(HistoriesPath);
+                path = HistoriesPath;
             } else {
                 if (!Directory.Exists(SavesPath))
                     Directory.CreateDirectory(SavesPath);
@@ -86,6 +86,21 @@ namespace SangjiagouCore {
             } else {
                 File.WriteAllBytes(saveFilePath, Encoding.UTF8.GetBytes(json));
             }
+        }
+
+        /// <summary>
+        /// 读取所有历史文件并解析其中的开场
+        /// </summary>
+        /// <returns>所有读取的历史</returns>
+        public static List<History> LoadHistories()
+        {
+            List<History> histories = new List<History>();
+            foreach (var file in new DirectoryInfo(HistoriesPath).GetFiles()) {
+                if (file.Extension != ".lishi" && file.Extension != ".json") continue;
+                string json = Encoding.UTF8.GetString(File.ReadAllBytes(file.FullName));
+                histories.Add(JsonMapper.ToObject<History>(json));
+            }
+            return histories;
         }
 
         /// <summary>
@@ -225,7 +240,7 @@ namespace SangjiagouCore {
 
             #region Debug时使用的预设值
 
-            TestInit();
+            // TestInit();
 
             #endregion
         }

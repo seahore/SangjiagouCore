@@ -40,6 +40,8 @@ public class ActionAssignmentPanel : MonoBehaviour
         suggestionDrafted = null;
 
         School playerSchool = Game.CurrentEntities.GetPlayerSchool(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ID);
+        if (playerSchool is null) return;
+
         selecting = new List<Scholar>();
 
         var list = transform.Find("Scroll View/Viewport/Scholars List");

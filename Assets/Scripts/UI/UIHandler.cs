@@ -13,6 +13,7 @@ public class UIHandler : MonoBehaviour
     public Canvas UpperUICanvas;
     public Canvas TopUICanvas;
     public MapRenderer Tilemap;
+    public GameObject ScenariosPanelPrefab;
     public GameObject SavedGamesPanelPrefab;
     public GameObject SettingsPanelPrefab;
     public GameObject SelectSchoolPanelPrefab;
@@ -31,6 +32,11 @@ public class UIHandler : MonoBehaviour
         GameObject o = GameObject.FindGameObjectWithTag("Player");
         if(o is null || !o.TryGetComponent(out player))
             player = null;
+
+        o = GameObject.Find("Version");
+        if(!(o is null) && o.TryGetComponent(out Text text)) {
+            text.text = "版本：" + Application.version;
+        }
     }
 
     void Update()
@@ -65,6 +71,12 @@ public class UIHandler : MonoBehaviour
             ShowWarningBox(e.Message);
         }
     }
+
+    public void OnScenariosButtonClick()
+    {
+        Instantiate(ScenariosPanelPrefab, UpperUICanvas.transform);
+    }
+    
     public void OnSavedGamesButtonClick()
     {
         Instantiate(SavedGamesPanelPrefab, UpperUICanvas.transform);
@@ -80,6 +92,12 @@ public class UIHandler : MonoBehaviour
         SetLoadingMask(() => {
             SceneManager.LoadSceneAsync("MainMenuScene", LoadSceneMode.Single);
         });
+    }
+
+    public void OnCreditButtonClick()
+    {
+        var anim = GameObject.Find("Credit Panel").GetComponent<Animator>();
+        anim.SetBool("Open", !anim.GetBool("Open"));
     }
 
     public void OnExitGameButtonClick()
@@ -113,7 +131,7 @@ public class UIHandler : MonoBehaviour
         ShowPanels(new List<string> { "Player Panel" });
         var ntip = Instantiate(NextTurnInfoPanelPrefab, UpperUICanvas.transform).transform;
         ntip.Find("Title").GetComponent<Text>().text = $"{Game.CurrentEntities.GetPlayerSchool(player.ID).Name}内部参考";
-        ntip.Find("Date").GetComponent<Text>().text = $"昭公{Int2Chinese(Game.CurrentEntities.Year)}年{Int2Chinese(Game.CurrentEntities.Month)}月刊";
+        ntip.Find("Date").GetComponent<Text>().text = $"昭公{(Game.CurrentEntities.Year == 1 ? "元" : Int2Chinese(Game.CurrentEntities.Year))}年{Int2Chinese(Game.CurrentEntities.Month)}月刊";
         ntip.Find("Scroll View/Viewport/Info").GetComponent<Text>().text = Game.CurrentEntities.GetMonthlyReport();
         ntp.GetComponent<Animator>().SetTrigger("Close");
 

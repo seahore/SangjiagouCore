@@ -36,7 +36,7 @@ public class MapRenderer : MonoBehaviour
 
     void Paint(Vector2Int pos, Color color)
     {
-        color.a = 0.5f;
+        color.a = 0.6667f;
         GameObject o = Instantiate(ColorOverlayPrefab);
         var refresh = Tilemap.transform.Find("Refresh");
         o.transform.SetParent(refresh);

@@ -1,0 +1,11 @@
+{
+    "Name" : "春秋",
+    "Scenarios": [
+        {
+            "Name": "昭公元年一月",
+            "ImagePath": "Chunqiu/Image.png",
+            "Introduction": "测试用剧本，齐鲁附近的简化地图。",
+            "GameFilePath": "Chunqiu/Zhaogong1-1.json"
+        }
+    ]
+}

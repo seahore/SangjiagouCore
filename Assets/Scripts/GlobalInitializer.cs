@@ -16,8 +16,8 @@ public class GlobalInitializer : MonoBehaviour
             Directory.CreateDirectory(Settings.SettingsPath);
         if (!Directory.Exists(Game.SavesPath))
             Directory.CreateDirectory(Game.SavesPath);
-        if (!Directory.Exists(Game.ScenariosPath))
-            Directory.CreateDirectory(Game.ScenariosPath);
+        if (!Directory.Exists(Game.HistoriesPath))
+            Directory.CreateDirectory(Game.HistoriesPath);
 
         Settings.LoadSettings(Settings.GlobalSettingsFilename);
         Screen.SetResolution(Settings.Values.Resolution.width, Settings.Values.Resolution.height, Settings.Values.FullScreenMode, Settings.Values.Resolution.refreshRate);
