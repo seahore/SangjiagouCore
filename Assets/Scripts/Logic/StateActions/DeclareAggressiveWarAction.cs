@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,7 +39,10 @@ namespace SangjiagouCore {
 
         public DeclareAggressiveWarAction(State actor, School proposer, State declaree, Town target):
             base(actor, proposer, declaree)
-        {
+        { 
+            if (!(declaree is null || target is null) && !declaree.Territory.Contains(target)) {
+                Debug.LogWarning("要索取的城市不是被宣战者所有");
+            }
             _target = target;
         }
 

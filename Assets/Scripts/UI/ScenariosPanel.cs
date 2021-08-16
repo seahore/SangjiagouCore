@@ -112,7 +112,7 @@ public class ScenariosPanel : MonoBehaviour
     {
         GameObject.FindGameObjectWithTag("Tilemap").GetComponent<MapRenderer>().RefreshMap();
 
-        GameObject.Find("Player Panel").transform.Find("Next Turn Button/Text").GetComponent<Text>().text = $"昭公{Int2Chinese(Game.CurrentEntities.Year)}年{Int2Chinese(Game.CurrentEntities.Month)}月";
+        GameObject.Find("Player Panel").transform.Find("Next Turn Button/Text").GetComponent<Text>().text = Game.CurrentEntities.DateToString();
 
         Instantiate(SelectSchoolPanelPrefab, GameObject.FindGameObjectWithTag("UIHandler").GetComponent<UIHandler>().UpperUICanvas.transform);
     }

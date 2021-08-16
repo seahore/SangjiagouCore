@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static SangjiagouCore.Utilities.ChineseNumerals;
 
 
 namespace SangjiagouCore
@@ -43,7 +44,7 @@ namespace SangjiagouCore
             foreach (var t in _towns) {
                 pkg.Towns.Add(t.Pack());
             }
-            foreach(var r in _roads) {
+            foreach (var r in _roads) {
                 pkg.Roads.Add(new List<string> { r.Item1.Name, r.Item2.Name });
             }
             return pkg;
@@ -89,10 +90,10 @@ namespace SangjiagouCore
             }
 
             _roads = new HashSet<(Town, Town)>();
-            foreach(var r in _pkg.Roads) {
+            foreach (var r in _pkg.Roads) {
                 Town town1 = null, town2 = null;
-                foreach(var t in _towns) {
-                    if(t.Name == r[0]) {
+                foreach (var t in _towns) {
+                    if (t.Name == r[0]) {
                         town1 = t;
                         break;
                     }
@@ -118,7 +119,12 @@ namespace SangjiagouCore
         /// <summary>
         /// 当前年份，自月份除12取整获得
         /// </summary>
-        public int Year => _totalMonth / 12 + 1;
+        public int Year => (_totalMonth - 1) / 12 + 1;
+        /// <summary>
+        /// 用自然语言表示当前日期
+        /// </summary>
+        /// <returns>日期的表示</returns>
+        public string DateToString() => $"昭公{(Game.CurrentEntities.Year == 1 ? "元" : Int2Chinese(Game.CurrentEntities.Year, false, true))}年{Int2Chinese(Game.CurrentEntities.Month, false, true)}月";
 
         List<School> _schools;
         /// <summary>
@@ -180,11 +186,19 @@ namespace SangjiagouCore
         public void NextTurn()
         {
             ++_totalMonth;
-            foreach(var s in _schools){
+            foreach (var s in _schools) {
                 s.NextTurn();
             }
+            List<State> subjugated = new List<State>();
             foreach (var s in _states) {
+                if (s.Territory.Count == 0) {
+                    subjugated.Add(s);
+                    continue;
+                }
                 s.NextTurn();
+            }
+            foreach (var s in subjugated) {
+                _states.Remove(s);
             }
         }
 
@@ -192,34 +206,38 @@ namespace SangjiagouCore
         {
             string text = "";
             foreach (var s in _states) {
-                if(s.FormerAction is null) {
-                    text += $"<b>{s.Name}</b>前月无所用事。\n";
+                if (s.FormerAction is null) {
+                    text += $"<b>{s.Name}</b>前月无所用事。\n\n";
                     continue;
                 }
                 switch (s.FormerAction.GetType().Name) {
                     case "DeclareWarAction": {
                         var action = (DeclareWarAction)s.FormerAction;
                         var report = action.GetReport();
-                        text += $"<b>{action.Actor.Name}</b>在讨伐<b>{action.Declaree.Name}</b>的义战中";
-                        text += report.Successful ? "<b>胜利</b>" : "<b>败北</b>";
-                        text += $"，<b>{action.Actor.Name}</b>损失{report.AttackerLoss}人，<b>{action.Declaree.Name}</b>损失{report.DefenderLoss}人。\n";
+                        text += $"<b>{action.Actor}</b>在讨伐<b>{action.Declaree}</b>的义战中";
+                        text += report.Successful ? "<b><color=maroon>胜利</color></b>" : "<b><color=maroon>败北</color></b>";
+                        text += $"，<b>{action.Actor}</b>损失{report.AttackerLoss}人，<b>{action.Declaree}</b>损失{report.DefenderLoss}人。";
                         break;
                     }
                     case "DeclareAggressiveWarAction": {
                         var action = (DeclareAggressiveWarAction)s.FormerAction;
                         var report = action.GetReport();
-                        text += $"<b>{action.Actor.Name}</b>在侵略<b>{action.Declaree.Name}</b>并索取<b>{action.Target.Name}</b>的不义战中";
-                        text += report.Successful ? "<b>胜利</b>" : "<b>败北</b>";
-                        text += $"，<b>{action.Actor.Name}</b>损失{report.AttackerLoss}人，<b>{action.Declaree.Name}</b>损失{report.DefenderLoss}人。\n";
+                        text += $"<b>{action.Actor}</b>在侵略<b>{action.Declaree}</b>并索取<b>{action.Target}</b>的不义战中";
+                        text += report.Successful ? "<b><color=maroon>胜利</color></b>" : "<b><color=maroon>败北</color></b>";
+                        text += $"，<b>{action.Actor}</b>损失{report.AttackerLoss}人，<b>{action.Declaree}</b>损失{report.DefenderLoss}人。";
+                        if (action.Declaree.Territory.Count == 0) {
+                            text += $"<b>{action.Declaree}</b>经此一役终告<b><color=maroon>亡国</color></b>。";
+                        }
                         break;
                     }
                     case "DevelopAction": {
                         var action = (DevelopAction)s.FormerAction;
                         var report = action.GetReport();
-                        text += $"<b>{action.Actor.Name}</b>在<b>{action.Target.Name}</b>进行营造，当地发展度提高了{report.DevelopmentIncrease}。\n";
+                        text += $"<b>{action.Actor}</b>在<b>{action.Target}</b>进行营造，当地发展度提高了{report.DevelopmentIncrease}。";
                         break;
                     }
                 }
+                text += "\n\n";
             }
             return text;
         }
@@ -233,6 +251,18 @@ namespace SangjiagouCore
             return null;
         }
 
+        public void AnnounceIndependenceOf(State newState, List<Town> territory)
+        {
+            Town maxDev = territory[0];
+            foreach (var t in territory) {
+                t.CedeTo(newState);
+                if (t.Development > maxDev.Development) maxDev = t;
+            }
+            maxDev.IsCapital = true;
+            newState.Territory.Clear();
+            newState.Territory.AddRange(territory);
+        }
+
         public Entities()
         {
             _totalMonth = 1;
@@ -243,5 +273,4 @@ namespace SangjiagouCore
             _mapSize = new Vector2Int(10, 10);
         }
     }
-
 }

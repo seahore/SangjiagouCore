@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,6 +41,12 @@ namespace SangjiagouCore
         public DeclareWarAction(State actor, School proposer, State declaree) :
             base(actor, proposer)
         {
+            if(!(actor is null || declaree is null) && actor == declaree) {
+                Debug.LogWarning("宣战者不能和被宣战者相同");
+            }
+            if(!(declaree is null) && !declaree.Monarch.IsInvader) {
+                Debug.LogWarning("向非侵略者君主宣义战");
+            }
             _declaree = declaree;
         }
 

@@ -51,7 +51,8 @@ public class Player : MonoBehaviour
         Input.Zoom += UpdateMouseScroll;
         Input.Zoom += CameraZoom;
         Input.LeftSelect += SelectMapTile;
-        Input.RightSelect += SelectTownInSelectTownMode;
+        Input.LeftSelect += SelectTownInSelectTownMode;
+        Input.RightSelect += GetStateFromTown;
         Input.NextTurn += NextTurn;
         Input.ShowMenu += ShowMenu;
     }
@@ -64,7 +65,8 @@ public class Player : MonoBehaviour
         Input.Zoom -= UpdateMouseScroll;
         Input.Zoom -= CameraZoom;
         Input.LeftSelect -= SelectMapTile;
-        Input.RightSelect -= SelectTownInSelectTownMode;
+        Input.LeftSelect -= SelectTownInSelectTownMode;
+        Input.RightSelect -= GetStateFromTown;
         Input.NextTurn -= NextTurn;
         Input.ShowMenu -= ShowMenu;
     }
@@ -120,13 +122,11 @@ public class Player : MonoBehaviour
         MainCamera.GetComponent<CameraController>().Zoom(scroll.y);
     }
 
-    void SelectMapTile()
+    Town SelectTileAndCheckTown()
     {
-        if (GraphicRaycast(mousePosition).Count > 0) return;
-        
         Vector3 t = MainCamera.ScreenToWorldPoint(mousePosition);
         Vector2Int selection = new Vector2Int((int)t.x, (int)t.y);
-        if (selection.x < 0 || selection.y < 0 || selection.x >= Game.CurrentEntities.MapSize.x || selection.y >= Game.CurrentEntities.MapSize.y) return;
+        if (selection.x < 0 || selection.y < 0 || selection.x >= Game.CurrentEntities.MapSize.x || selection.y >= Game.CurrentEntities.MapSize.y) return null;
         MapRenderer.SelectTile(selection);
 
         Town town = null;
@@ -136,12 +136,31 @@ public class Player : MonoBehaviour
                 break;
             }
         }
+        return town;
+    }
+
+    bool MouseOnUI() => GraphicRaycast(mousePosition).Count > 0;
+
+    void SelectMapTile()
+    {
+        if (mode != Mode.Normal || MouseOnUI()) return;
+
+        Town town = SelectTileAndCheckTown();
         UIHandler.OnSelectTile(town);
+    }
+
+    void GetStateFromTown()
+    {
+        if (mode != Mode.Normal || MouseOnUI()) return;
+
+        Town town = SelectTileAndCheckTown();
+        if (!(town is null))
+            UIHandler.OnSelectState(town.Controller);
     }
 
     void SelectTownInSelectTownMode()
     {
-        if (mode != Mode.SelectTown || GraphicRaycast(mousePosition).Count > 0) return;
+        if (mode != Mode.SelectTown || MouseOnUI()) return;
 
         Vector3 t = MainCamera.ScreenToWorldPoint(mousePosition);
         Vector2Int selection = new Vector2Int((int)t.x, (int)t.y);

@@ -134,7 +134,7 @@ namespace SangjiagouCore
                 _isCapital = false;
                 _controller = receiver;
                 if (formerController.Territory.Count == 0) {
-                    // TODO: 国家被消灭的处理
+                    // 不用显式删除国家，这个过程类似GC是每一轮自动完成的。
                     return;
                 }
                 formerController.Territory[0]._isCapital = true;
@@ -144,6 +144,13 @@ namespace SangjiagouCore
             }
         }
 
+        public override string ToString() => _name;
+
+        public override bool Equals(object o) => o is Town && this == (Town)o;
+        public override int GetHashCode() => _position.GetHashCode();
+
+        public static bool operator ==(Town a, Town b) => !(a is null || b is null) && a._position == b._position;
+        public static bool operator !=(Town a, Town b) => !(a == b);
 
         public Town() { }
         public Town(Package pkg)

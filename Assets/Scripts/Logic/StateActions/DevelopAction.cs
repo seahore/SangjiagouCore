@@ -1,7 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Random = UnityEngine.Random;
 
 namespace SangjiagouCore {
 
@@ -34,6 +35,9 @@ namespace SangjiagouCore {
         public DevelopAction(State actor, School proposer, Town target):
             base(actor, proposer)
         {
+            if (!(actor is null || target is null) && !actor.Territory.Contains(target)) {
+                Debug.LogWarning("不能在别国领土进行营造");
+            }
             _target = target;
         }
     
@@ -43,7 +47,7 @@ namespace SangjiagouCore {
 
             bool targetIsUnderControl = false;
             foreach (var t in _actor.Territory) {
-                if (_target.Name == t.Name) {
+                if (_target == t) {
                     targetIsUnderControl = true;
                     break;
                 }
@@ -77,7 +81,7 @@ namespace SangjiagouCore {
 
             // 如果要执行营造的城郭是边境
             foreach (var t in Game.CurrentEntities.Towns) {
-                if (Game.CurrentEntities.Roads.Contains((t, _target)) && t.Controller.Name != _actor.Name) {
+                if (Game.CurrentEntities.Roads.Contains((t, _target)) && t.Controller != _actor) {
                     result -= 5.0f;
                 }
             }
@@ -88,7 +92,7 @@ namespace SangjiagouCore {
         }
 
         public override void Act() {
-            int increase = (int)(Random.Range(25, 75) * (1 + (_actor.PoliTech * 0.1f)));
+            int increase = (int)(Random.Range(50, 150) * (1 + (_actor.PoliTech * 0.1f)));
             _target.Development += increase;
 
             _report = new Report(true, 0, increase);

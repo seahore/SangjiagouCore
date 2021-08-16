@@ -131,7 +131,7 @@ namespace SangjiagouCore {
                     return;
                 if (states[i].InfluenceRatio(this) > 0.4f)
                     break;
-                if (unassigned[0].Location.Name != states[i].Capital.Name)
+                if (unassigned[0].Location != states[i].Capital)
                     unassigned[0].Action = new TravelAction(unassigned[0], unassigned[0].Location, states[i].Capital);
                 else
                     unassigned[0].Action = new DiscussWithMonarchAction(unassigned[0], unassigned[0].Location);

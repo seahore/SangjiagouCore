@@ -126,12 +126,12 @@ public class UIHandler : MonoBehaviour
         HideAllPanels();
         var ntp = Instantiate(NextTurnProgressPrefab, UpperUICanvas.transform).transform;
         Game.CurrentEntities.NextTurn();
-        GameObject.Find("Player Panel").transform.Find("Next Turn Button/Text").GetComponent<Text>().text = $"昭公{Int2Chinese(Game.CurrentEntities.Year)}年{Int2Chinese(Game.CurrentEntities.Month)}月";
+        GameObject.Find("Player Panel").transform.Find("Next Turn Button/Text").GetComponent<Text>().text = Game.CurrentEntities.DateToString();
         Tilemap.RefreshMap();
         ShowPanels(new List<string> { "Player Panel" });
         var ntip = Instantiate(NextTurnInfoPanelPrefab, UpperUICanvas.transform).transform;
         ntip.Find("Title").GetComponent<Text>().text = $"{Game.CurrentEntities.GetPlayerSchool(player.ID).Name}内部参考";
-        ntip.Find("Date").GetComponent<Text>().text = $"昭公{(Game.CurrentEntities.Year == 1 ? "元" : Int2Chinese(Game.CurrentEntities.Year))}年{Int2Chinese(Game.CurrentEntities.Month)}月刊";
+        ntip.Find("Date").GetComponent<Text>().text = Game.CurrentEntities.DateToString() + "刊";
         ntip.Find("Scroll View/Viewport/Info").GetComponent<Text>().text = Game.CurrentEntities.GetMonthlyReport();
         ntp.GetComponent<Animator>().SetTrigger("Close");
 
@@ -150,6 +150,17 @@ public class UIHandler : MonoBehaviour
             t.Drawback();
         } else {
             t.Set(town);
+            t.Show();
+        }
+    }
+
+    public void OnSelectState(State state)
+    {
+        var t = GameObject.Find("State Info Panel").GetComponent<StateInfoPanel>();
+        if (state is null) {
+            t.Drawback();
+        } else {
+            t.Set(state);
             t.Show();
         }
     }

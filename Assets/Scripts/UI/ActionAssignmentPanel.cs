@@ -162,13 +162,14 @@ public class ActionAssignmentPanel : MonoBehaviour
                 if (townSelected is null)
                     return;
                 foreach (var s in selecting) {
-                    if (s.Location.Name != townSelected.Name)
+                    if (s.Location != townSelected)
                         s.Action = new TravelAction(s, s.Location, townSelected);
                 }
                 break;
             case 2:     // 游说
                 foreach (var s in selecting) {
-                    s.Action = new DiscussWithMonarchAction(s, s.Location);
+                    if (s.Location.IsCapital)
+                        s.Action = new DiscussWithMonarchAction(s, s.Location);
                 }
                 break;
             case 3:     // 对策
@@ -180,24 +181,38 @@ public class ActionAssignmentPanel : MonoBehaviour
                     Type stateActionType = suggestionDrafted.GetType();
                     State actor = s.Location.Controller;
                     School prop = s.BelongTo;
+                    bool invalid = false;
                     switch (stateActionType.Name) {
                         case "DeclareWarAction": {
                             var a = (DeclareWarAction)suggestionDrafted;
+                            if (a.Declaree == actor || !a.Declaree.Monarch.IsInvader) {
+                                invalid = true;
+                                break;
+                            }
                             suggestionDrafted = new DeclareWarAction(actor, prop, a.Declaree);
                             break;
                         }
                         case "DeclareAggressiveWarAction": {
                             var a = (DeclareAggressiveWarAction)suggestionDrafted;
+                            if (a.Declaree == actor) {
+                                invalid = true;
+                                break;
+                            }
                             suggestionDrafted = new DeclareAggressiveWarAction(actor, prop, a.Declaree, a.Target);
                             break;
                         }
                         case "DevelopAction": {
                             var a = (DevelopAction)suggestionDrafted;
+                            if (!actor.Territory.Contains(a.Target)) {
+                                invalid = true;
+                                break;
+                            }
                             suggestionDrafted = new DevelopAction(actor, prop, a.Target);
                             break;
                         }
                     }
-                    s.Action = new ProposeAction(s, s.Location, suggestionDrafted);
+                    if(!invalid)
+                        s.Action = new ProposeAction(s, s.Location, suggestionDrafted);
                 }
                 break;
         }

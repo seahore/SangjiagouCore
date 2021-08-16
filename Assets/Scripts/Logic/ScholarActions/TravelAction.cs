@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,9 @@ namespace SangjiagouCore
         public TravelAction(Scholar actor, Town place, Town destination)
         : base(actor, place)
         {
+            if(!(place is null || destination is null)&& place == destination) {
+                Debug.LogWarning("这不是原地不动嘛");
+            }
             _destination = destination;
         }
 

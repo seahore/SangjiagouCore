@@ -12,7 +12,7 @@ public class TownInfoPanel : MonoBehaviour
     {
         transform.Find("Town Name").GetComponent<Text>().text = town.Name;
         if(town.IsCapital) {
-            transform.Find("Town Name").GetComponent<Text>().text += "¡ï";
+            transform.Find("Town Name").GetComponent<Text>().text += "â˜…";
         }
         transform.Find("Position").GetComponent<Text>().text = town.Position.ToString();
         transform.Find("Controller Text").GetComponent<Text>().text = town.Controller.Name;

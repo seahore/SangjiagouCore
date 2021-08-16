@@ -434,7 +434,13 @@ namespace SangjiagouCore
             _army = ArmyUpdate();
         }
 
+        public override string ToString() => _name;
 
+        public override bool Equals(object o) => o is State && this == (State)o;
+        public override int GetHashCode() => _name.GetHashCode();
+
+        public static bool operator ==(State a, State b) => !(a is null || b is null) && a._name == b._name;
+        public static bool operator !=(State a, State b) => !(a == b);
 
         public State() { }
         public State(Package pkg)
