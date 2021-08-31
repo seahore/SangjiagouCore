@@ -48,6 +48,7 @@ namespace SangjiagouCore
             _development = _pkg.Development;
             _isCapital = _pkg.IsCapital;
             _unlinkRecruits = new Dictionary<string, List<Scholar>>();
+            _hasRoadTo = new List<Town>();
             foreach (var r in pkg.Recruits) {
                 List<Scholar> l = new List<Scholar>();
                 foreach (var sp in r.Value) {
@@ -81,7 +82,7 @@ namespace SangjiagouCore
                 }
                 _recruits.Add(school, i.Value);
             }
-
+            // HasRoadTo 在顶层Relink中被赋值，这样效率更高
             _pkg = null;
         }
 
@@ -116,6 +117,11 @@ namespace SangjiagouCore
         /// </summary>
         public bool IsCapital { get => _isCapital; set { _isCapital = value; } }
 
+        List<Town> _hasRoadTo;
+        /// <summary>
+        /// 有道路通行的所有城
+        /// </summary>
+        public List<Town> HasRoadTo => _hasRoadTo;
 
         Dictionary<School, List<Scholar>> _recruits;
         /// <summary>
@@ -146,7 +152,7 @@ namespace SangjiagouCore
 
         public override string ToString() => _name;
 
-        public override bool Equals(object o) => o is Town && this == (Town)o;
+        public override bool Equals(object o) => o is Town && this == o as Town;
         public override int GetHashCode() => _position.GetHashCode();
 
         public static bool operator ==(Town a, Town b) => !(a is null || b is null) && a._position == b._position;

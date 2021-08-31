@@ -11,13 +11,14 @@ namespace SangjiagouCore
         public class Package
         {
             public string Name;
-            public struct _Color { public float r, g, b; }
-            public _Color PrimaryColor;
-            public _Color SecondaryColor;
+            public struct Color { public float r, g, b; }
+            public Color PrimaryColor;
+            public Color SecondaryColor;
+            public string FlagFilename;
             public Monarch.Package Monarch;
             public Monarch.Package CrownPrince;
-            public int PoliTech;
-            public int MiliTech;
+            public int Politech;
+            public int Militech;
             public int Population;
             public int Army;
             public int Satisfaction;
@@ -31,11 +32,12 @@ namespace SangjiagouCore
         {
             Package pkg = new Package {
                 Name = _name,
-                PrimaryColor = new Package._Color(),
-                SecondaryColor = new Package._Color(),
+                PrimaryColor = new Package.Color(),
+                SecondaryColor = new Package.Color(),
+                FlagFilename = _flagFilename,
                 Monarch = _monarch.Pack(),
-                PoliTech = _poliTech,
-                MiliTech = _miliTech,
+                Politech = _politech,
+                Militech = _militech,
                 Population = _population,
                 Army = _army,
                 Satisfaction = _satisfaction,
@@ -77,14 +79,16 @@ namespace SangjiagouCore
             _name = _pkg.Name;
             _primaryColor = new Color(_pkg.PrimaryColor.r, _pkg.PrimaryColor.g, _pkg.PrimaryColor.b);
             _secondaryColor = new Color(_pkg.SecondaryColor.r, _pkg.SecondaryColor.g, _pkg.SecondaryColor.b);
+            _flagFilename = _pkg.FlagFilename;
+            _flag = Game.LoadFlag(_pkg.FlagFilename);
             _monarch = new Monarch(_pkg.Monarch);
             if (pkg.CrownPrince is null) {
                 _crownPrince = null;
             } else {
                 _crownPrince = new Monarch(_pkg.CrownPrince);
             }
-            _poliTech = _pkg.PoliTech;
-            _miliTech = _pkg.MiliTech;
+            _politech = _pkg.Politech;
+            _militech = _pkg.Militech;
             _population = _pkg.Population;
             _army = _pkg.Army;
             _satisfaction = _pkg.Satisfaction;
@@ -148,6 +152,13 @@ namespace SangjiagouCore
         /// </summary>
         public Color SecondaryColor => _secondaryColor;
 
+        string _flagFilename;
+        Sprite _flag;
+        /// <summary>
+        /// 该国旗帜（正方形）。
+        /// </summary>
+        public Sprite Flag => _flag;
+
         Monarch _monarch;
         /// <summary>
         /// 该国之君主
@@ -187,14 +198,14 @@ namespace SangjiagouCore
             }
         }
 
-        int _poliTech;
-        public int PoliTech => _poliTech;
-        public int Politics => _poliTech + _monarch.PoliticsAbility;
+        int _politech;
+        public int Politech { get => _politech; set => _politech = value; }
+        public int Politics => _politech + _monarch.PoliticsAbility;
 
 
-        int _miliTech;
-        public int MiliTech => _miliTech;
-        public int Military => MiliTech + _monarch.MilitaryAbility;
+        int _militech;
+        public int Militech { get => _militech; set => _militech = value; }
+        public int Military => Militech + _monarch.MilitaryAbility;
 
 
 
@@ -260,19 +271,19 @@ namespace SangjiagouCore
         /// <summary>
         /// 该国民生
         /// </summary>
-        public int Satisfaction => _satisfaction;
+        public int Satisfaction { get => _satisfaction; set => _satisfaction = value; }
 
         int _ceremony;
         /// <summary>
         /// 该国礼乐
         /// </summary>
-        public int Ceremony => _ceremony;
+        public int Ceremony { get => _ceremony; set => _ceremony = value; }
 
         int _food;
         /// <summary>
         /// 该国粮食储量
         /// </summary>
-        public int Food => _food;
+        public int Food { get => _food; set => _food = value; }
 
         Dictionary<School, int> _influenceOfSchools;
         /// <summary>
@@ -286,6 +297,34 @@ namespace SangjiagouCore
         /// </summary>
         public List<Scholar> Scholars => _scholars;
         // 由于Scholar亦有一个所在国属性，所以State类是否需要另外维护一个Scholar的列表，仍旧应该讨论
+
+
+        public HashSet<Town> NeighbourTowns {
+            get {
+                HashSet<Town> s = new HashSet<Town>();
+                foreach(var t in Territory) {
+                    foreach (var i in t.HasRoadTo) {
+                        if (i.Controller != this)
+                            s.Add(i);
+                    }
+                }
+                return s;
+            }
+        }
+
+        public HashSet<State> Neighbours {
+            get {
+                HashSet<State> s = new HashSet<State>();
+                foreach (var t in NeighbourTowns) {
+                    s.Add(t.Controller);
+                }
+                return s;
+            }
+        }
+
+
+
+
 
         StateAction _formerAction;
         public StateAction FormerAction => _formerAction;
@@ -436,7 +475,7 @@ namespace SangjiagouCore
 
         public override string ToString() => _name;
 
-        public override bool Equals(object o) => o is State && this == (State)o;
+        public override bool Equals(object o) => o is State && this == o as State;
         public override int GetHashCode() => _name.GetHashCode();
 
         public static bool operator ==(State a, State b) => !(a is null || b is null) && a._name == b._name;

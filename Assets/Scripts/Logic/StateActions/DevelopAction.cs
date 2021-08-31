@@ -17,12 +17,15 @@ namespace SangjiagouCore {
             public bool Successful => _successful;
             int _changeOfInfluence;
             public int ChangeOfInfluence => _changeOfInfluence;
+            int _foodConsumption;
+            public int FoodConsumption => _foodConsumption;
             int _developmentIncrease;
             public int DevelopmentIncrease => _developmentIncrease;
-            public Report(bool successful, int changeOfInfluence, int developmentIncrease)
+            public Report(bool successful, int changeOfInfluence, int foodConsumption, int developmentIncrease)
             {
                 _successful = successful;
                 _changeOfInfluence = changeOfInfluence;
+                _foodConsumption = foodConsumption;
                 _developmentIncrease = developmentIncrease;
             }
         }
@@ -81,7 +84,7 @@ namespace SangjiagouCore {
 
             // 如果要执行营造的城郭是边境
             foreach (var t in Game.CurrentEntities.Towns) {
-                if (Game.CurrentEntities.Roads.Contains((t, _target)) && t.Controller != _actor) {
+                if (Game.CurrentEntities.Roads.Contains(new Road(t, _target)) && t.Controller != _actor) {
                     result -= 5.0f;
                 }
             }
@@ -92,13 +95,18 @@ namespace SangjiagouCore {
         }
 
         public override void Act() {
-            int increase = (int)(Random.Range(50, 150) * (1 + (_actor.PoliTech * 0.1f)));
+            int consumption = Random.Range(4000, 10000);
+            int increase = (int)(Random.Range(150, 300) * (1 + (_actor.Politech * 0.1f)));
+
+            _actor.Food -= consumption;
             _target.Development += increase;
 
-            _report = new Report(true, 0, increase);
+            _report = new Report(true, 0, consumption, increase);
         }
 
         public Report GetReport() => _report;
+
+        public override string Name => "营造";
 
         public override string ToString() => $"<b>{_actor.Name}</b>在<b>{_target.Name}</b>进行营造";
     }

@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     public UIHandler UIHandler;
     public Camera MainCamera;
     public MapRenderer MapRenderer;
-    public GraphicRaycaster[] GraphicRaycaster;
+    public GraphicRaycaster[] GraphicRaycasters;
 
     int id;
     public int ID => id;
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
         Input.Zoom += CameraZoom;
         Input.LeftSelect += SelectMapTile;
         Input.LeftSelect += SelectTownInSelectTownMode;
-        Input.RightSelect += GetStateFromTown;
+        Input.RightSelect += SelectStateByTile;
         Input.NextTurn += NextTurn;
         Input.ShowMenu += ShowMenu;
     }
@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
         Input.Zoom -= CameraZoom;
         Input.LeftSelect -= SelectMapTile;
         Input.LeftSelect -= SelectTownInSelectTownMode;
-        Input.RightSelect -= GetStateFromTown;
+        Input.RightSelect -= SelectStateByTile;
         Input.NextTurn -= NextTurn;
         Input.ShowMenu -= ShowMenu;
     }
@@ -96,7 +96,7 @@ public class Player : MonoBehaviour
         var ped = new ExtendedPointerEventData(EventSystem.current);
         var results = new List<RaycastResult>();
         ped.position = mousePos;
-        foreach (var gr in GraphicRaycaster) {
+        foreach (var gr in GraphicRaycasters) {
             gr.Raycast(ped, results);
         }
         return results;
@@ -122,21 +122,10 @@ public class Player : MonoBehaviour
         MainCamera.GetComponent<CameraController>().Zoom(scroll.y);
     }
 
-    Town SelectTileAndCheckTown()
+    Vector2Int SelectTile()
     {
         Vector3 t = MainCamera.ScreenToWorldPoint(mousePosition);
-        Vector2Int selection = new Vector2Int((int)t.x, (int)t.y);
-        if (selection.x < 0 || selection.y < 0 || selection.x >= Game.CurrentEntities.MapSize.x || selection.y >= Game.CurrentEntities.MapSize.y) return null;
-        MapRenderer.SelectTile(selection);
-
-        Town town = null;
-        foreach (var i in Game.CurrentEntities.Towns) {
-            if (i.Position == selection) {
-                town = i;
-                break;
-            }
-        }
-        return town;
+        return new Vector2Int((int)t.x, (int)t.y);
     }
 
     bool MouseOnUI() => GraphicRaycast(mousePosition).Count > 0;
@@ -145,17 +134,22 @@ public class Player : MonoBehaviour
     {
         if (mode != Mode.Normal || MouseOnUI()) return;
 
-        Town town = SelectTileAndCheckTown();
-        UIHandler.OnSelectTile(town);
+        Vector2Int pos = SelectTile();
+        if (pos.x < 0 || pos.y < 0 || pos.x >= Game.CurrentEntities.MapSize.x || pos.y >= Game.CurrentEntities.MapSize.y)
+            return;
+
+        UIHandler.OnSelectTile(pos);
     }
 
-    void GetStateFromTown()
+    void SelectStateByTile()
     {
         if (mode != Mode.Normal || MouseOnUI()) return;
 
-        Town town = SelectTileAndCheckTown();
-        if (!(town is null))
-            UIHandler.OnSelectState(town.Controller);
+        Vector2Int pos = SelectTile();
+        if (pos.x < 0 || pos.y < 0 || pos.x >= Game.CurrentEntities.MapSize.x || pos.y >= Game.CurrentEntities.MapSize.y)
+            return;
+
+        UIHandler.OnSelectTile(pos, true);
     }
 
     void SelectTownInSelectTownMode()
@@ -180,6 +174,13 @@ public class Player : MonoBehaviour
     void CheckTooltipAndShow(Vector2 mousePos)
     {
         ITooltipDisplayable tip = null;
+        /*
+        var casted = GraphicRaycast(mousePos);
+        if (casted.Count == 0) return;
+        if(!GraphicRaycast(mousePos)[0].gameObject.TryGetComponent(out tip)) {
+            return;
+        }
+        */
         foreach (var i in GraphicRaycast(mousePos)) {
             if (i.gameObject.TryGetComponent(out tip))
                 break;

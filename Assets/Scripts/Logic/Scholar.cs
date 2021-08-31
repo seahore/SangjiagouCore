@@ -164,6 +164,8 @@ namespace SangjiagouCore {
         }
 
 
+        public override string ToString() => FullName + "，字" + CourtesyName;
+
 
         public Scholar()
         {

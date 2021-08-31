@@ -1,0 +1,13 @@
+Microsoft.NET.Test.Sdk
+Microsoft.NETFramework.ReferenceAssemblies
+FSharp.Core
+NUnit3TestAdapter
+NUnit
+NUnitLite content:none
+FsUnit
+System.Runtime
+System.Runtime.Numerics
+System.Runtime.Serialization.Xml
+System.Runtime.Serialization.Primitives
+System.Runtime.Serialization.Formatters
+System.Security.Cryptography.Algorithms

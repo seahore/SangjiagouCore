@@ -39,9 +39,14 @@ namespace SangjiagouCore {
 
         public DeclareAggressiveWarAction(State actor, School proposer, State declaree, Town target):
             base(actor, proposer, declaree)
-        { 
-            if (!(declaree is null || target is null) && !declaree.Territory.Contains(target)) {
-                Debug.LogWarning("要索取的城市不是被宣战者所有");
+        {
+            if (!(actor is null || declaree is null || target is null)) {
+                if (!declaree.Territory.Contains(target)) {
+                    Debug.LogWarning("要索取的城市不是被宣战者所有");
+                }
+                if (!actor.NeighbourTowns.Contains(target)) {
+                    Debug.LogWarning("要夺取的城镇不在宣战国边境上");
+                }
             }
             _target = target;
         }
@@ -73,6 +78,8 @@ namespace SangjiagouCore {
         }
 
         public new Report GetReport() => _report;
+
+        public override string Name => "不义战";
 
         public override string ToString() => $"<b>{_actor.Name}</b>向<b>{_declaree.Name}</b>索取<b>{_target.Name}</b>的不义战";
     }

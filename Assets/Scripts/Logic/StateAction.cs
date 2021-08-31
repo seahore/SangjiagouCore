@@ -20,7 +20,12 @@ namespace SangjiagouCore {
         /// </summary>
         /// <returns>可行性</returns>
         public abstract float Assess();
-    
+
+        /// <summary>
+        /// 该行动的名称
+        /// </summary>
+        public abstract string Name { get; }
+
         public StateAction(State actor, School proposer) {
             _actor = actor;
             _proposer = proposer;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using LitJson;
+using System.Text;
 
 public class Settings
 {
@@ -48,8 +49,6 @@ public class Settings
 
         #endregion
 
-
-
         #region 显示
 
         public FullScreenMode FullScreenMode { get; set; }
@@ -57,6 +56,18 @@ public class Settings
 
         #endregion
 
+        #region 操作
+
+        /// <summary>
+        /// 选取提议后自动分配
+        /// </summary>
+        public bool AutoAssign { get; set; }
+        /// <summary>
+        /// 对于只有一个参数的行动自动进入选择模式
+        /// </summary>
+        public bool AutoSelectMode { get; set; }
+
+        #endregion
     }
     public static ValueTable Values;
 
@@ -65,7 +76,9 @@ public class Settings
         BGMVolumn = 80,
         SFXVolumn = 100,
         FullScreenMode = FullScreenMode.FullScreenWindow,
-        Resolution = Screen.currentResolution
+        Resolution = Screen.currentResolution,
+        AutoAssign = true,
+        AutoSelectMode = true,
     };
 
     public readonly static string SettingsPath = Application.dataPath + Path.DirectorySeparatorChar + "Settings";
@@ -83,14 +96,8 @@ public class Settings
         string path = SettingsPath + Path.DirectorySeparatorChar + filename;
         string json = JsonMapper.ToJson(Values);
 
-        Debug.Log(json);
-
-        FileStream settingFile;
-        BinaryWriter bw;
-        settingFile = new FileStream(path, FileMode.Create);
-        bw = new BinaryWriter(settingFile);
-        bw.Write(json);
-        bw.Close();
+        File.Create(path).Dispose();
+        File.WriteAllBytes(path, Encoding.UTF8.GetBytes(json));
     }
     /// <summary>
     /// 从文件读取设置
@@ -101,21 +108,12 @@ public class Settings
         if (!Directory.Exists(SettingsPath))
             Directory.CreateDirectory(SettingsPath);
         string path = SettingsPath + Path.DirectorySeparatorChar + filename;
-        FileStream file;
-        BinaryReader br;
         if (!File.Exists(path)) {
             Values = DefaultValues;
             SaveSettings(GlobalSettingsFilename);
             return;
         }
-        file = new FileStream(path, FileMode.Open);
-        br = new BinaryReader(file);
-        string json;
-        json = br.ReadString();
-
-        Debug.Log(json);
-
-        br.Close();
+        string json = Encoding.UTF8.GetString(File.ReadAllBytes(path));
         Values = JsonMapper.ToObject<ValueTable>(json);
     }
 

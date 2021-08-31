@@ -23,7 +23,7 @@ namespace SangjiagouCore
             public List<State.Package> States;
             public List<Town.Package> Towns;
             public _Vector2Int MapSize;
-            public List<List<string>> Roads; // ==> HashSet<(Town, Town)> _roads;
+            public List<List<string>> Roads; // ==> HashSet<Road> _roads;
         }
         public Package Pack()
         {
@@ -45,7 +45,7 @@ namespace SangjiagouCore
                 pkg.Towns.Add(t.Pack());
             }
             foreach (var r in _roads) {
-                pkg.Roads.Add(new List<string> { r.Item1.Name, r.Item2.Name });
+                pkg.Roads.Add(new List<string> { r.Town1.Name, r.Town2.Name });
             }
             return pkg;
         }
@@ -89,7 +89,7 @@ namespace SangjiagouCore
                 t.Relink();
             }
 
-            _roads = new HashSet<(Town, Town)>();
+            _roads = new HashSet<Road>();
             foreach (var r in _pkg.Roads) {
                 Town town1 = null, town2 = null;
                 foreach (var t in _towns) {
@@ -104,7 +104,12 @@ namespace SangjiagouCore
                         break;
                     }
                 }
-                _roads.Add((town1, town2));
+                _roads.Add(new Road(town1, town2));
+            }
+
+            foreach (var r in _roads) {
+                r.Town1.HasRoadTo.Add(r.Town2);
+                r.Town2.HasRoadTo.Add(r.Town1);
             }
 
             _pkg = null;
@@ -168,17 +173,34 @@ namespace SangjiagouCore
         /// </summary>
         public List<Town> Towns => _towns;
 
-        HashSet<(Town, Town)> _roads;
+        HashSet<Road> _roads;
         /// <summary>
         /// 两城之间有直接道路连接的集合
         /// </summary>
-        public HashSet<(Town, Town)> Roads => _roads;
+        public HashSet<Road> Roads => _roads;
 
         Vector2Int _mapSize;
         /// <summary>
         /// 地图大小
         /// </summary>
         public Vector2Int MapSize => _mapSize;
+
+        /// <summary>
+        /// 所有国家行动的类型数组（只读）
+        /// </summary>
+        public readonly System.Type[] AllStateActionTypes = {
+            typeof(CollectFolkSongsAction),
+            typeof(CommandeerAction),
+            typeof(DeclareAggressiveWarAction),
+            typeof(DeclareWarAction),
+            typeof(DevelopAction),
+            typeof(HuntAction),
+            typeof(ImpressAction),
+            typeof(MilitaryResearchAction),
+            typeof(PoliticsResearchAction),
+            typeof(RelievePoorAction),
+            typeof(SacrificeAction),
+        };
 
         /// <summary>
         /// 进行下一回合
@@ -236,6 +258,60 @@ namespace SangjiagouCore
                         text += $"<b>{action.Actor}</b>在<b>{action.Target}</b>进行营造，当地发展度提高了{report.DevelopmentIncrease}。";
                         break;
                     }
+                    case "CollectFolkSongsAction": {
+                        var action = (CollectFolkSongsAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>君使人采风咏于朝野，因民情而施政，甚得民心，民生增加了{report.SatisfactionIncrease}，政治技术增加了{report.PolitechIncrease}。";
+                            break;
+                    }
+                    case "HuntAction": {
+                        var action = (HuntAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>君率军大狩于野，所获甚多，军心大涨，食物增加了{report.FoodIncrease}，军事技术增加了{report.MilitechIncrease}。";
+                        break;
+                    }
+                    case "SacrificeAction": {
+                        var action = (SacrificeAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>登岳封禅，消耗了{report.FoodConsumption}食物，增长了{report.CeremonyIncrease}礼乐。";
+                        break;
+                    }
+                    case "ImpressAction": {
+                        var action = (ImpressAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>强征{report.ArmyIncrease}人入伍，消耗了{report.FoodConsumption}食物，损失了{report.SatisfactionReduction}民生。";
+                        break;
+                    }
+                    case "CommandeerAction": {
+                        var action = (CommandeerAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>命百姓纳苛捐杂税计{report.FoodIncrease}粮食，损失了{report.SatisfactionReduction}民生。";
+                        break;
+                    }
+                    case "ImproveRelationshipsAction": {
+                        var action = (ImproveRelationshipsAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>向{action.Counterpart}赠礼通好，改善了{action.Counterpart}对{action.Actor}的{report.RelationshipIncrease}看法。";
+                        break;
+                    }
+                    case "PoliticsResearchAction": {
+                        var action = (PoliticsResearchAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>命有司总结政治经验，提升了{report.PolitechIncrease}政治技术。";
+                        break;
+                    }
+                    case "MilitaryResearchAction": {
+                        var action = (MilitaryResearchAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>命将领总结军法，提升了{report.MilitechIncrease}军事技术。";
+                        break;
+                    }
+                    case "RelievePoorAction": {
+                        var action = (RelievePoorAction)s.FormerAction;
+                        var report = action.GetReport();
+                        text += $"<b>{action.Actor}</b>开粮仓以{report.FoodConsumption}粮食大赈百姓，提升了{report.SatisfactionIncrease}民生。";
+                        break;
+                    }
                 }
                 text += "\n\n";
             }
@@ -269,7 +345,7 @@ namespace SangjiagouCore
             _schools = new List<School>();
             _states = new List<State>();
             _towns = new List<Town>();
-            _roads = new HashSet<(Town, Town)>();
+            _roads = new HashSet<Road>();
             _mapSize = new Vector2Int(10, 10);
         }
     }

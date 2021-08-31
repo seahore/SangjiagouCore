@@ -41,11 +41,16 @@ namespace SangjiagouCore
         public DeclareWarAction(State actor, School proposer, State declaree) :
             base(actor, proposer)
         {
-            if(!(actor is null || declaree is null) && actor == declaree) {
-                Debug.LogWarning("宣战者不能和被宣战者相同");
-            }
-            if(!(declaree is null) && !declaree.Monarch.IsInvader) {
-                Debug.LogWarning("向非侵略者君主宣义战");
+            if (!(actor is null || declaree is null)) {
+                if (actor == declaree) {
+                    Debug.LogWarning("宣战者不能和被宣战者相同");
+                }
+                if (!actor.Neighbours.Contains(declaree)) {
+                    Debug.LogWarning("宣战者和被宣战者不是邻国");
+                }
+                if (!(declaree is null) && !declaree.Monarch.IsInvader) {
+                    Debug.LogWarning("向非侵略者君主宣义战");
+                }
             }
             _declaree = declaree;
         }
@@ -81,6 +86,8 @@ namespace SangjiagouCore
         }
 
         public Report GetReport() => _report;
+
+        public override string Name => "义战";
 
         public override string ToString() => $"<b>{_actor.Name}</b>讨伐<b>{_declaree.Name}</b>的义战";
     }

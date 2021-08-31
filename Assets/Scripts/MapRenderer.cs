@@ -15,18 +15,22 @@ public class MapRenderer : MonoBehaviour
     public GameObject ColorOverlayPrefab;
     public GameObject SelectOverlayPrefab;
     public GameObject BorderLinePrefab;
+    public GameObject RoadLinePrefab;
 
-    GameObject selectOverlay;
+    Transform _selectOverlays;
+    Transform _refresh;
 
     const float COLOR_OVERLAY_Z_DIST = 2;
     const float SELECT_OVERLAY_Z_DIST = 4;
 
     void Awake()
     {
-        selectOverlay = Instantiate(SelectOverlayPrefab);
-        selectOverlay.transform.SetParent(Tilemap.transform);
-        selectOverlay.SetActive(false);
-        new GameObject("Refresh").transform.SetParent(Tilemap.transform);
+        _selectOverlays = new GameObject("Select Overlays").transform;
+        _selectOverlays.SetParent(Tilemap.transform);
+        _selectOverlays.SetPositionAndRotation(new Vector3(0, 0, - SELECT_OVERLAY_Z_DIST), Quaternion.identity);
+
+        _refresh = new GameObject("Refresh").transform;
+        _refresh.SetParent(Tilemap.transform);
     }
 
     void Update()
@@ -38,35 +42,51 @@ public class MapRenderer : MonoBehaviour
     {
         color.a = 0.6667f;
         GameObject o = Instantiate(ColorOverlayPrefab);
-        var refresh = Tilemap.transform.Find("Refresh");
-        o.transform.SetParent(refresh);
+        o.transform.SetParent(_refresh);
         o.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, Tilemap.transform.position.z - COLOR_OVERLAY_Z_DIST), Quaternion.identity);
         o.GetComponent<SpriteRenderer>().material = new Material(Shader.Find("Sprites/Default"));
         o.GetComponent<SpriteRenderer>().material.SetColor("_Color", color);
     }
 
+    void DrawRoad(Vector2Int a, Vector2Int b)
+    {
+        var road = Instantiate(RoadLinePrefab, _refresh);
+        road.GetComponent<LineRenderer>().SetPositions(new Vector3[]{ new Vector2(a.x + 0.5f, a.y + 0.5f), new Vector2(b.x + 0.5f, b.y + 0.5f)});
+    }
+
     public void SelectTile(Vector2Int pos)
     {
-        selectOverlay.SetActive(true);
-        selectOverlay.transform.SetPositionAndRotation(new Vector3(pos.x, pos.y, Tilemap.transform.position.z - SELECT_OVERLAY_Z_DIST), Quaternion.identity);
+        DeselectTile();
+        var overlay = Instantiate(SelectOverlayPrefab, _selectOverlays).transform;
+        overlay.SetPositionAndRotation(new Vector3(pos.x, pos.y, 0), Quaternion.identity);
+    }
+
+    public void SelectTiles(List<Vector2Int> positions)
+    {
+        DeselectTile();
+        foreach (var i in positions) {
+            var overlay = Instantiate(SelectOverlayPrefab, _selectOverlays).transform;
+            overlay.SetPositionAndRotation(new Vector3(i.x, i.y, 0), Quaternion.identity);
+        }
     }
 
     public void DeselectTile()
     {
-        selectOverlay.SetActive(false);
+        for (int i = 0; i < _selectOverlays.childCount; i++) {
+            Destroy(_selectOverlays.GetChild(i).gameObject);
+        }
     }
 
     public void RefreshMap()
     {
-        var refresh = Tilemap.transform.Find("Refresh").transform;
-        for (int i = 0; i < refresh.childCount; ++i) {
-            Destroy(refresh.GetChild(i).gameObject);
+        for (int i = 0; i < _refresh.childCount; ++i) {
+            Destroy(_refresh.GetChild(i).gameObject);
         }
 
-        GameObject tb = Instantiate(BorderLinePrefab, refresh);
-        GameObject bb = Instantiate(BorderLinePrefab, refresh);
-        GameObject lb = Instantiate(BorderLinePrefab, refresh);
-        GameObject rb = Instantiate(BorderLinePrefab, refresh);
+        GameObject tb = Instantiate(BorderLinePrefab, _refresh);
+        GameObject bb = Instantiate(BorderLinePrefab, _refresh);
+        GameObject lb = Instantiate(BorderLinePrefab, _refresh);
+        GameObject rb = Instantiate(BorderLinePrefab, _refresh);
 
         tb.name = "Top Border";
         bb.name = "Bottom Border";
@@ -95,6 +115,10 @@ public class MapRenderer : MonoBehaviour
         foreach (var t in Game.CurrentEntities.Towns) {
             Tilemap.SetTile(new Vector3Int(t.Position.x, t.Position.y, 0), TownTile);
             Paint(t.Position, t.Controller.PrimaryColor);
+        }
+
+        foreach (var r in Game.CurrentEntities.Roads) {
+            DrawRoad(r.Town1.Position, r.Town2.Position);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-[CreateAssetMenu(menuName = "Player Input")]
+[CreateAssetMenu(menuName = "Player Input", order = 20)]
 public class PlayerInput : ScriptableObject, DefaultInputActions.IGameplayActions
 {
     public event UnityAction<Vector2> Point = delegate { };
